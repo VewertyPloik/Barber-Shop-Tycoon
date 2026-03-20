@@ -11,7 +11,7 @@
             touch-action: none; color: white;
         }
         #canvas-container { width: 100vw; height: 100vh; display: block; }
-    
+   
         /* Top UI Dashboard */
         #ui-top {
             position: absolute; top: 15px; left: 50%; transform: translateX(-50%);
@@ -27,7 +27,7 @@
         }
         #progress-bar { width: 0%; height: 100%; background-color: #4CAF50; transition: width 0.2s; }
         #accuracy-bar { width: 100%; height: 100%; background-color: #2196F3; transition: width 0.2s; }
-    
+   
         /* Money Display */
         #money-display {
             position: absolute; top: 20px; left: 20px; font-size: 24px; font-weight: bold;
@@ -43,7 +43,7 @@
         }
         .btn:active { transform: scale(0.95); }
         .btn-shop { background: #9c27b0; color: white; border-color: #fff; }
-    
+   
         #ui-bottom {
             position: absolute; bottom: 30px; left: 0; width: 100%;
             display: flex; justify-content: center; gap: 10px; pointer-events: none; z-index: 10;
@@ -110,13 +110,14 @@
         .modal-box {
             background: #222; border: 3px solid #fff; border-radius: 15px; padding: 20px;
             text-align: center; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto;
+            position: relative;
         }
         .modal-title { font-size: 28px; font-weight: bold; margin-bottom: 15px; color: #ffc107; }
-    
+   
         .comparison-container { display: flex; justify-content: space-around; align-items: center; gap: 10px; margin: 15px 0; }
         .comparison-col { flex: 1; display: flex; flex-direction: column; align-items: center; }
         .comparison-col img { width: 100%; max-width: 250px; border-radius: 10px; border: 2px solid #555; background: #2a2a35; }
-    
+   
         .earnings-display { font-size: 24px; font-weight: bold; color: #ffeb3b; margin: 10px 0; }
         .accuracy-display { font-size: 32px; font-weight: bold; margin: 10px 0; }
         /* NEW: Customer dialogue */
@@ -134,7 +135,7 @@
             box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
             line-height: 1.4;
         }
-    
+   
         /* Shop Styles */
         .shop-item {
             background: #333; border: 2px solid #555; border-radius: 10px; padding: 15px;
@@ -144,11 +145,32 @@
         .shop-info { text-align: left; }
         .shop-title { font-size: 18px; font-weight: bold; color: #fff; }
         .shop-desc { font-size: 12px; color: #aaa; margin-top: 4px; }
+
+        /* NEW: Song list in settings */
+        .song-item {
+            background: #333;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            padding: 14px;
+            margin: 8px 0;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .song-item:hover {
+            background: #444;
+        }
+        .song-item.playing {
+            border-color: #4CAF50;
+            background: #2e4a2e;
+            box-shadow: 0 0 10px #4CAF50;
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
     <div id="money-display">💵 $0</div>
+    <button id="btn-settings" class="btn" style="position: absolute; top: 80px; left: 20px; padding: 8px 12px; font-size: 22px;">⚙️</button>
     <div id="ui-top">
         <div class="header-text">
             <span id="level-text">Level 1</span>
@@ -187,11 +209,12 @@
     </div>
     <div id="shop-modal" class="modal-overlay">
         <div class="modal-box">
+            <button onclick="closeShop()" style="position:absolute; top:15px; left:15px; font-size:28px; background:none; border:none; color:#fff; cursor:pointer;">✕</button>
             <div class="modal-title" style="color: #9c27b0;">Studio Upgrades 🛒</div>
             <p>Current Balance: <span id="shop-balance" style="color:#4CAF50; font-weight:bold;">$0</span></p>
-        
+       
             <div id="shop-items-container"></div>
-        
+       
             <br>
             <button class="btn" onclick="closeShop()">Back to Shop ➔</button>
         </div>
@@ -217,10 +240,25 @@
             <div id="customer-dialogue"></div>
         </div>
     </div>
+
+    <!-- NEW SETTINGS MODAL -->
+    <div id="settings-modal" class="modal-overlay">
+        <div class="modal-box">
+            <button onclick="closeSettings()" style="position:absolute; top:15px; left:15px; font-size:28px; background:none; border:none; color:#fff; cursor:pointer;">✕</button>
+            <div class="modal-title">Settings ⚙️</div>
+            <h3 style="color:#ffc107; margin:20px 0 10px 0;">Background Music</h3>
+            <button id="music-toggle-btn" class="btn" onclick="toggleMusic()" style="margin-bottom:15px; width:220px; font-size:18px;">🔊 Music: ON</button>
+            <div id="song-list" style="max-height:320px; overflow-y:auto; padding:0 10px;"></div>
+            <br>
+            <button class="btn" onclick="closeSettings()">Close Settings</button>
+        </div>
+    </div>
+
+    <audio id="bgMusic" loop preload="none"></audio>
+
     <script>
-        // --- 1. DATA & ECONOMY SYSTEM ---
         let money = parseInt(localStorage.getItem('barberMoney')) || 0;
-     
+    
         let purchased = JSON.parse(localStorage.getItem('barberPurchased')) || {
             floor: false, neon: false, goldChair: false, vipBG: false,
             proLights: false, plant: false
@@ -253,7 +291,6 @@
             localStorage.setItem('barberEnabled', JSON.stringify(enabled));
         }
         updateEconomyUI();
-        // --- NEW: CUSTOMER DIALOGUE POOL ---
         const dialogues = {
             low: [
                 "What the &*$# is this man?!?!",
@@ -284,13 +321,12 @@
                 "Thank you, I really needed a good cut"
             ]
         };
-        // --- 2. SCENE SETUP & UPGRADES ---
         const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
-    
+   
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.8); scene.add(ambientLight);
         const spotLight = new THREE.SpotLight(0xffeedd, 0.8); spotLight.position.set(0, 8, 6); scene.add(spotLight);
         let floorMesh = null;
@@ -367,7 +403,6 @@
                 plantGroup = null;
             }
         }
-        // --- 3. CHARACTER SETUP ---
         const characterGroup = new THREE.Group();
         scene.add(characterGroup);
         characterGroup.add(drape);
@@ -386,12 +421,11 @@
         const hairGroup = new THREE.Group();
         characterGroup.add(hairGroup);
         let fallingHair = [];
-        // --- 4. GAME LOGIC & LEVELS ---
         let currentLevel = parseInt(localStorage.getItem('barberSaveLevel')) || 1;
         let totalTasks = 0; let correctCuts = 0; let mistakes = 0; let levelIsActive = false;
         let requestFrames = []; let resultFrames = []; let spinFrameIndex = 0;
         let isTopView = false;
-    
+   
         const skinColors = [0xf1c27d, 0x8d5524, 0xc68642, 0xe0ac69, 0x4a3123, 0xffdbac];
         const hairColors = [0x221100, 0x111111, 0x551100, 0x888888, 0xd4af37, 0x990000];
         const levels = [
@@ -417,13 +451,13 @@
             totalTasks = 0; correctCuts = 0; mistakes = 0; fallingHair = []; levelIsActive = false;
             document.getElementById('btn-force-finish').style.display = 'none';
             document.getElementById('fail-modal').style.display = 'none';
-        
+       
             while(hairGroup.children.length > 0){ hairGroup.remove(hairGroup.children[0]); }
             characterGroup.rotation.y = 0;
             const levelData = levels[(levelNum - 1) % levels.length];
             skinMat.color.setHex(skinColors[Math.floor(Math.random() * skinColors.length)]);
             const hairMat = new THREE.MeshStandardMaterial({ color: hairColors[Math.floor(Math.random() * hairColors.length)], roughness: 1.0 });
-        
+       
             const isMessy = Math.random() > 0.5;
             const baseLength = isMessy ? 0.25 : 0.16;
             const latSteps = 24 + Math.floor(Math.random() * 8);
@@ -432,7 +466,7 @@
                 let radiusAtLat = headRadius * Math.sin(phi);
                 let circumference = 2 * Math.PI * radiusAtLat;
                 let lonSteps = Math.max(1, Math.floor(circumference / 0.12));
-            
+           
                 for (let lon = 0; lon < lonSteps; lon++) {
                     let theta = (lon / lonSteps) * Math.PI * 2;
                     let x = headRadius * Math.sin(phi) * Math.cos(theta);
@@ -492,7 +526,6 @@
             btn.innerText = isTopView ? '👆 Top View' : '📐 Side View';
             updateCameraView();
         }
-        // --- 5. TOOLS + GRAB HINT ---
         let currentTool = 'scissors';
         const toolIconDOM = document.getElementById('active-tool');
         function showGrabHint() {
@@ -514,7 +547,6 @@
             if (tool === 'scissors') document.getElementById('btn-scissors').classList.add('active');
             else if (tool === 'mini-scissors') document.getElementById('btn-mini-scissors').classList.add('active');
             else if (tool === 'clippers') document.getElementById('btn-clippers').classList.add('active');
-            // Show grab hint every time player switches tools
             showGrabHint();
         }
         document.getElementById('btn-scissors').addEventListener('click', () => switchTool('scissors'));
@@ -531,7 +563,7 @@
             if (clientX >= rect.left - 40 && clientX <= rect.right + 40 && clientY >= rect.top - 40 && clientY <= rect.bottom + 40) {
                 isGrabbingTool = true;
                 toolIconDOM.style.transition = 'none';
-                hideGrabHint(); // hide hint the moment they grab it
+                hideGrabHint();
                 updateInteraction(e);
             }
         }
@@ -564,7 +596,7 @@
             toolIconDOM.style.transform = (currentTool === 'scissors' || currentTool === 'mini-scissors')
                 ? `rotate(${Math.sin(time) * 20}deg)`
                 : `rotate(${Math.sin(time) * 5}deg) translateY(${Math.cos(time) * 5}px)`;
-        
+       
             mouse.x = (clientX / window.innerWidth) * 2 - 1;
             mouse.y = -(clientY / window.innerHeight) * 2 + 1;
             raycaster.setFromCamera(mouse, camera);
@@ -582,7 +614,7 @@
                     } else if (currentTool === 'clippers') {
                         if (segPos.distanceTo(hitPoint) < 0.64) isHit = true;
                     }
-                
+               
                     if (isHit) {
                         seg.userData.currentState = 'cut';
                         seg.visible = false;
@@ -596,7 +628,7 @@
         function updateUI() {
             let progressRaw = (correctCuts / totalTasks) * 100;
             let progressPercent = Math.min(100, Math.floor(progressRaw || 0));
-        
+       
             let accuracyPercent = 100;
             if (mistakes > 0) accuracyPercent = Math.max(0, 100 - Math.floor((mistakes / totalTasks) * 150));
             document.getElementById('progress-bar').style.width = progressPercent + '%';
@@ -607,7 +639,7 @@
                 levelIsActive = false; onPointerUp(); document.getElementById('fail-modal').style.display = 'flex'; return;
             }
             if (progressPercent >= 85) document.getElementById('btn-force-finish').style.display = 'block';
-            if (progressPercent >= 99 && levelIsActive) {
+            if (progressPercent >= 100 && levelIsActive) {
                 levelIsActive = false; setTimeout(() => { showLevelComplete(accuracyPercent); }, 800);
             }
         }
@@ -628,11 +660,10 @@
             let tip = Math.floor(finalAccuracy * 0.3);
             if (finalAccuracy < 50) { basePay = 0; tip = 0; }
             let total = basePay + tip;
-        
+       
             money += total;
             updateEconomyUI();
             document.getElementById('earnings-display').innerText = `Base: $${basePay} | Tip: $${tip} | Total: $${total}`;
-            // NEW: Pick random customer dialogue based on accuracy
             let category;
             if (finalAccuracy <= 65) {
                 category = 'low';
@@ -648,12 +679,11 @@
             document.getElementById('customer-dialogue').innerText = `"${randomDialogue}"`;
             document.getElementById('level-complete-modal').style.display = 'flex';
         }
-        // --- 7. SHOP LOGIC ---
         function openShop() {
             levelIsActive = false; onPointerUp();
             const container = document.getElementById('shop-items-container');
             container.innerHTML = '';
-        
+       
             shopData.forEach(item => {
                 const isPurchased = purchased[item.id];
                 const isEnabled = enabled[item.id];
@@ -700,7 +730,6 @@
             document.getElementById('shop-modal').style.display = 'none';
             levelIsActive = true;
         }
-        // --- 8. EVENT LISTENERS ---
         window.addEventListener('pointerdown', onPointerDown);
         window.addEventListener('pointermove', onPointerMove);
         window.addEventListener('pointerup', onPointerUp);
@@ -710,7 +739,7 @@
         document.getElementById('btn-angle').addEventListener('click', toggleView);
         document.getElementById('btn-photo').addEventListener('click', () => { document.getElementById('photo-modal').style.display = 'flex'; });
         document.getElementById('btn-shop-open').addEventListener('click', openShop);
-    
+   
         document.getElementById('btn-force-finish').addEventListener('click', () => {
             if (levelIsActive) {
                 levelIsActive = false;
@@ -722,7 +751,7 @@
         function closePhoto() {
             document.getElementById('photo-modal').style.display = 'none';
             levelIsActive = true;
-            showGrabHint(); // show hint when player starts cutting
+            showGrabHint();
         }
         function startNextLevel() { document.getElementById('level-complete-modal').style.display = 'none'; currentLevel++; loadLevel(currentLevel); }
         function restartLevel() { document.getElementById('fail-modal').style.display = 'none'; loadLevel(currentLevel); }
@@ -731,11 +760,88 @@
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
-        // --- 9. ANIMATION LOOP ---
+
+        // ==================== MUSIC SYSTEM (3 songs + toggle + settings) ====================
+        const bgMusic = document.getElementById('bgMusic');
+        let musicStarted = false;
+        let isMusicOn = true;
+        let currentSongIndex = 0;
+        const songs = [
+            { name: "SoundHelix Song 1 (Upbeat)", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+            { name: "SoundHelix Song 2 (Chill)", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
+            { name: "SoundHelix Song 3 (Energetic)", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" }
+        ];
+
+        function playCurrentSong() {
+            if (!isMusicOn || !musicStarted) return;
+            bgMusic.pause();
+            bgMusic.src = songs[currentSongIndex].src;
+            bgMusic.load();
+            const playPromise = bgMusic.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(() => {});
+            }
+        }
+
+        function startBackgroundMusic() {
+            if (musicStarted) return;
+            musicStarted = true;
+            playCurrentSong();
+        }
+
+        function toggleMusic() {
+            isMusicOn = !isMusicOn;
+            if (isMusicOn) {
+                playCurrentSong();
+            } else {
+                bgMusic.pause();
+            }
+            updateMusicToggleUI();
+        }
+
+        function updateMusicToggleUI() {
+            const btn = document.getElementById('music-toggle-btn');
+            if (btn) btn.innerHTML = isMusicOn ? '🔊 Music: ON' : '🔇 Music: OFF';
+        }
+
+        function switchSong(index) {
+            currentSongIndex = index;
+            if (isMusicOn && musicStarted) {
+                playCurrentSong();
+            }
+            renderSongList();
+        }
+
+        function renderSongList() {
+            const container = document.getElementById('song-list');
+            let html = '';
+            songs.forEach((song, i) => {
+                const active = (i === currentSongIndex) ? 'playing' : '';
+                html += `<div class="song-item ${active}" onclick="switchSong(${i})">${song.name}</div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function openSettings() {
+            levelIsActive = false; onPointerUp();
+            renderSongList();
+            updateMusicToggleUI();
+            document.getElementById('settings-modal').style.display = 'flex';
+        }
+
+        function closeSettings() {
+            document.getElementById('settings-modal').style.display = 'none';
+            levelIsActive = true;
+        }
+
+        // ==================== EVENT LISTENERS ====================
+        document.getElementById('btn-settings').addEventListener('click', openSettings);
+        document.addEventListener('click', startBackgroundMusic, { once: true });
+
         function animate() {
             requestAnimationFrame(animate);
             characterGroup.rotation.y += (targetChairRotation - characterGroup.rotation.y) * 0.1;
-        
+       
             if (neonMesh) {
                 neonMesh.rotation.z += 0.01;
                 neonMesh.rotation.x += 0.005;
