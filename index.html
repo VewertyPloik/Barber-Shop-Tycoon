@@ -11,7 +11,7 @@
             touch-action: none; color: white;
         }
         #canvas-container { width: 100vw; height: 100vh; display: block; }
-      
+    
         /* Top UI Dashboard */
         #ui-top {
             position: absolute; top: 15px; left: 50%; transform: translateX(-50%);
@@ -27,7 +27,7 @@
         }
         #progress-bar { width: 0%; height: 100%; background-color: #4CAF50; transition: width 0.2s; }
         #accuracy-bar { width: 100%; height: 100%; background-color: #2196F3; transition: width 0.2s; }
-      
+    
         /* Money Display */
         #money-display {
             position: absolute; top: 20px; left: 20px; font-size: 24px; font-weight: bold;
@@ -43,7 +43,7 @@
         }
         .btn:active { transform: scale(0.95); }
         .btn-shop { background: #9c27b0; color: white; border-color: #fff; }
-      
+    
         #ui-bottom {
             position: absolute; bottom: 30px; left: 0; width: 100%;
             display: flex; justify-content: center; gap: 10px; pointer-events: none; z-index: 10;
@@ -112,14 +112,13 @@
             text-align: center; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto;
         }
         .modal-title { font-size: 28px; font-weight: bold; margin-bottom: 15px; color: #ffc107; }
-      
+    
         .comparison-container { display: flex; justify-content: space-around; align-items: center; gap: 10px; margin: 15px 0; }
         .comparison-col { flex: 1; display: flex; flex-direction: column; align-items: center; }
         .comparison-col img { width: 100%; max-width: 250px; border-radius: 10px; border: 2px solid #555; background: #2a2a35; }
-      
+    
         .earnings-display { font-size: 24px; font-weight: bold; color: #ffeb3b; margin: 10px 0; }
         .accuracy-display { font-size: 32px; font-weight: bold; margin: 10px 0; }
-
         /* NEW: Customer dialogue */
         #customer-dialogue {
             font-size: 20px;
@@ -135,7 +134,7 @@
             box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
             line-height: 1.4;
         }
-      
+    
         /* Shop Styles */
         .shop-item {
             background: #333; border: 2px solid #555; border-radius: 10px; padding: 15px;
@@ -165,7 +164,6 @@
     <button id="btn-photo" class="btn">📸 Request</button>
     <button id="btn-shop-open" class="btn btn-shop">🛒 Shop</button>
     <button id="btn-force-finish" class="btn">✅ Finish Cut</button>
-  
     <div id="tool-panel">
         <div id="btn-scissors" class="tool-btn" title="Precision Scissors">✂️</div>
         <div id="btn-mini-scissors" class="tool-btn" title="Mini Scissors (30% trim)">✂️</div>
@@ -174,9 +172,9 @@
     <div id="active-tool">✂️</div>
     <div id="grab-hint">👆 Grab me!</div>
     <div id="canvas-container"></div>
-  
     <div id="ui-bottom">
         <button id="btn-left" class="btn">↺ Spin Left</button>
+        <button id="btn-angle" class="btn">📐 Side View</button>
         <button id="btn-right" class="btn">Spin Right ↻</button>
     </div>
     <div id="photo-modal" class="modal-overlay">
@@ -191,9 +189,9 @@
         <div class="modal-box">
             <div class="modal-title" style="color: #9c27b0;">Studio Upgrades 🛒</div>
             <p>Current Balance: <span id="shop-balance" style="color:#4CAF50; font-weight:bold;">$0</span></p>
-          
+        
             <div id="shop-items-container"></div>
-          
+        
             <br>
             <button class="btn" onclick="closeShop()">Back to Shop ➔</button>
         </div>
@@ -222,7 +220,7 @@
     <script>
         // --- 1. DATA & ECONOMY SYSTEM ---
         let money = parseInt(localStorage.getItem('barberMoney')) || 0;
-       
+     
         let purchased = JSON.parse(localStorage.getItem('barberPurchased')) || {
             floor: false, neon: false, goldChair: false, vipBG: false,
             proLights: false, plant: false
@@ -255,7 +253,6 @@
             localStorage.setItem('barberEnabled', JSON.stringify(enabled));
         }
         updateEconomyUI();
-
         // --- NEW: CUSTOMER DIALOGUE POOL ---
         const dialogues = {
             low: [
@@ -287,14 +284,13 @@
                 "Thank you, I really needed a good cut"
             ]
         };
-
         // --- 2. SCENE SETUP & UPGRADES ---
         const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
-      
+    
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.8); scene.add(ambientLight);
         const spotLight = new THREE.SpotLight(0xffeedd, 0.8); spotLight.position.set(0, 8, 6); scene.add(spotLight);
         let floorMesh = null;
@@ -394,7 +390,8 @@
         let currentLevel = parseInt(localStorage.getItem('barberSaveLevel')) || 1;
         let totalTasks = 0; let correctCuts = 0; let mistakes = 0; let levelIsActive = false;
         let requestFrames = []; let resultFrames = []; let spinFrameIndex = 0;
-      
+        let isTopView = false;
+    
         const skinColors = [0xf1c27d, 0x8d5524, 0xc68642, 0xe0ac69, 0x4a3123, 0xffdbac];
         const hairColors = [0x221100, 0x111111, 0x551100, 0x888888, 0xd4af37, 0x990000];
         const levels = [
@@ -406,23 +403,27 @@
             { name: "Reverse Mohawk", rule: (x, y, z) => (x > -0.3 && x < 0.3) ? 'cut' : 'full' },
             { name: "Undercut", rule: (x, y, z) => (Math.abs(x) > 0.35 || Math.abs(z) > 0.35) ? 'cut' : 'full' },
             { name: "The Fade", rule: (x, y, z) => y < 0.6 ? 'cut' : 'full' },
-            { name: "Mullet", rule: (x, y, z) => z > 0 ? 'cut' : 'full' },
+            { name: "Back Only", rule: (x, y, z) => z > 0 ? 'cut' : 'full' },
             { name: "Bowl Cut", rule: (x, y, z) => y > 0.45 ? 'cut' : 'full' },
             { name: "Flat Top", rule: (x, y, z) => y > 0.85 ? 'cut' : 'full' },
-            { name: "Caesar Cut", rule: (x, y, z) => (y > 0.75 || Math.abs(z) > 0.4) ? 'cut' : 'full' }
+            { name: "Caesar Cut", rule: (x, y, z) => (y > 0.75 || Math.abs(z) > 0.4) ? 'cut' : 'full' },
+            { name: "The Quiff", rule: (x, y, z) => (y > 0.55 && z < 0.1) ? 'full' : 'cut' },
+            { name: "Mullet", rule: (x, y, z) => (Math.abs(x) < 0.80 && y > 0.5) ? 'full' : 'cut' },
+            { name: "The Classic", rule: (x, y, z) => (y > 0.05 && Math.abs(x) < 1.2 && z < 1.8) ? 'full' : 'cut' },
+            { name: "Tiny Mohawk", rule: (x, y, z) => (Math.abs(x) > 0.05 || Math.abs(z) > 1.0 || y < 0.45) ? 'cut' : 'full' }
         ];
         function loadLevel(levelNum) {
             applyUpgradesToScene();
             totalTasks = 0; correctCuts = 0; mistakes = 0; fallingHair = []; levelIsActive = false;
             document.getElementById('btn-force-finish').style.display = 'none';
             document.getElementById('fail-modal').style.display = 'none';
-          
+        
             while(hairGroup.children.length > 0){ hairGroup.remove(hairGroup.children[0]); }
             characterGroup.rotation.y = 0;
             const levelData = levels[(levelNum - 1) % levels.length];
             skinMat.color.setHex(skinColors[Math.floor(Math.random() * skinColors.length)]);
             const hairMat = new THREE.MeshStandardMaterial({ color: hairColors[Math.floor(Math.random() * hairColors.length)], roughness: 1.0 });
-          
+        
             const isMessy = Math.random() > 0.5;
             const baseLength = isMessy ? 0.25 : 0.16;
             const latSteps = 24 + Math.floor(Math.random() * 8);
@@ -431,7 +432,7 @@
                 let radiusAtLat = headRadius * Math.sin(phi);
                 let circumference = 2 * Math.PI * radiusAtLat;
                 let lonSteps = Math.max(1, Math.floor(circumference / 0.12));
-              
+            
                 for (let lon = 0; lon < lonSteps; lon++) {
                     let theta = (lon / lonSteps) * Math.PI * 2;
                     let x = headRadius * Math.sin(phi) * Math.cos(theta);
@@ -466,7 +467,7 @@
             }
             characterGroup.rotation.y = originalRotation;
             hairGroup.children.forEach(seg => { seg.visible = true; });
-            camera.position.set(0, 2.5, 7); camera.lookAt(0, 1.5, 0);
+            updateCameraView();
         }
         setInterval(() => {
             if (requestFrames.length > 0) {
@@ -477,6 +478,20 @@
             if (resultFrames.length > 0) document.getElementById('compare-result-img').src = resultFrames[spinFrameIndex % resultFrames.length];
             spinFrameIndex++;
         }, 120);
+        function updateCameraView() {
+            if (isTopView) {
+                camera.position.set(0, 5.0, 4.5);
+            } else {
+                camera.position.set(0, 2.5, 7);
+            }
+            camera.lookAt(0, 1.5, 0);
+        }
+        function toggleView() {
+            isTopView = !isTopView;
+            const btn = document.getElementById('btn-angle');
+            btn.innerText = isTopView ? '👆 Top View' : '📐 Side View';
+            updateCameraView();
+        }
         // --- 5. TOOLS + GRAB HINT ---
         let currentTool = 'scissors';
         const toolIconDOM = document.getElementById('active-tool');
@@ -549,7 +564,7 @@
             toolIconDOM.style.transform = (currentTool === 'scissors' || currentTool === 'mini-scissors')
                 ? `rotate(${Math.sin(time) * 20}deg)`
                 : `rotate(${Math.sin(time) * 5}deg) translateY(${Math.cos(time) * 5}px)`;
-          
+        
             mouse.x = (clientX / window.innerWidth) * 2 - 1;
             mouse.y = -(clientY / window.innerHeight) * 2 + 1;
             raycaster.setFromCamera(mouse, camera);
@@ -567,7 +582,7 @@
                     } else if (currentTool === 'clippers') {
                         if (segPos.distanceTo(hitPoint) < 0.64) isHit = true;
                     }
-                  
+                
                     if (isHit) {
                         seg.userData.currentState = 'cut';
                         seg.visible = false;
@@ -581,7 +596,7 @@
         function updateUI() {
             let progressRaw = (correctCuts / totalTasks) * 100;
             let progressPercent = Math.min(100, Math.floor(progressRaw || 0));
-          
+        
             let accuracyPercent = 100;
             if (mistakes > 0) accuracyPercent = Math.max(0, 100 - Math.floor((mistakes / totalTasks) * 150));
             document.getElementById('progress-bar').style.width = progressPercent + '%';
@@ -605,7 +620,7 @@
                 resultFrames.push(renderer.domElement.toDataURL('image/png'));
             }
             characterGroup.rotation.y = originalRotation;
-            camera.position.set(0, 2.5, 7); camera.lookAt(0, 1.5, 0);
+            updateCameraView();
             let accuracyColor = finalAccuracy >= 80 ? "#4CAF50" : (finalAccuracy >= 50 ? "#ff9800" : "#f44336");
             document.getElementById('final-accuracy-display').innerText = `Accuracy: ${finalAccuracy}%`;
             document.getElementById('final-accuracy-display').style.color = accuracyColor;
@@ -613,11 +628,10 @@
             let tip = Math.floor(finalAccuracy * 0.3);
             if (finalAccuracy < 50) { basePay = 0; tip = 0; }
             let total = basePay + tip;
-          
+        
             money += total;
             updateEconomyUI();
             document.getElementById('earnings-display').innerText = `Base: $${basePay} | Tip: $${tip} | Total: $${total}`;
-
             // NEW: Pick random customer dialogue based on accuracy
             let category;
             if (finalAccuracy <= 65) {
@@ -632,7 +646,6 @@
             const possibleDialogues = dialogues[category];
             const randomDialogue = possibleDialogues[Math.floor(Math.random() * possibleDialogues.length)];
             document.getElementById('customer-dialogue').innerText = `"${randomDialogue}"`;
-
             document.getElementById('level-complete-modal').style.display = 'flex';
         }
         // --- 7. SHOP LOGIC ---
@@ -640,7 +653,7 @@
             levelIsActive = false; onPointerUp();
             const container = document.getElementById('shop-items-container');
             container.innerHTML = '';
-          
+        
             shopData.forEach(item => {
                 const isPurchased = purchased[item.id];
                 const isEnabled = enabled[item.id];
@@ -694,9 +707,10 @@
         window.addEventListener('pointercancel', onPointerUp);
         document.getElementById('btn-left').addEventListener('click', () => { targetChairRotation -= Math.PI / 4; });
         document.getElementById('btn-right').addEventListener('click', () => { targetChairRotation += Math.PI / 4; });
+        document.getElementById('btn-angle').addEventListener('click', toggleView);
         document.getElementById('btn-photo').addEventListener('click', () => { document.getElementById('photo-modal').style.display = 'flex'; });
         document.getElementById('btn-shop-open').addEventListener('click', openShop);
-      
+    
         document.getElementById('btn-force-finish').addEventListener('click', () => {
             if (levelIsActive) {
                 levelIsActive = false;
@@ -721,7 +735,7 @@
         function animate() {
             requestAnimationFrame(animate);
             characterGroup.rotation.y += (targetChairRotation - characterGroup.rotation.y) * 0.1;
-          
+        
             if (neonMesh) {
                 neonMesh.rotation.z += 0.01;
                 neonMesh.rotation.x += 0.005;
@@ -742,6 +756,7 @@
             renderer.render(scene, camera);
         }
         loadLevel(currentLevel);
+        updateCameraView();
         animate();
     </script>
 </body>
