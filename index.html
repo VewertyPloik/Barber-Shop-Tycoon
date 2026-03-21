@@ -11,7 +11,6 @@
             touch-action: none; color: white;
         }
         #canvas-container { width: 100vw; height: 100vh; display: block; }
- 
         /* Top UI Dashboard */
         #ui-top {
             position: absolute; top: 15px; left: 50%; transform: translateX(-50%);
@@ -27,7 +26,6 @@
         }
         #progress-bar { width: 0%; height: 100%; background-color: #4CAF50; transition: width 0.2s; }
         #accuracy-bar { width: 100%; height: 100%; background-color: #2196F3; transition: width 0.2s; }
- 
         /* Money Display */
         #money-display {
             position: absolute; top: 20px; left: 20px; font-size: 24px; font-weight: bold;
@@ -43,7 +41,6 @@
         }
         .btn:active { transform: scale(0.95); }
         .btn-shop { background: #9c27b0; color: white; border-color: #fff; }
- 
         #ui-bottom {
             position: absolute; bottom: 30px; left: 0; width: 100%;
             display: flex; justify-content: center; gap: 10px; pointer-events: none; z-index: 10;
@@ -111,11 +108,9 @@
             position: relative;
         }
         .modal-title { font-size: 28px; font-weight: bold; margin-bottom: 15px; color: #ffc107; }
- 
         .comparison-container { display: flex; justify-content: space-around; align-items: center; gap: 10px; margin: 15px 0; }
         .comparison-col { flex: 1; display: flex; flex-direction: column; align-items: center; }
         .comparison-col img { width: 100%; max-width: 250px; border-radius: 10px; border: 2px solid #555; background: #2a2a35; }
- 
         .earnings-display { font-size: 24px; font-weight: bold; color: #ffeb3b; margin: 10px 0; }
         .accuracy-display { font-size: 32px; font-weight: bold; margin: 10px 0; }
         #customer-dialogue {
@@ -132,7 +127,6 @@
             box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
             line-height: 1.4;
         }
- 
         /* Shop Styles */
         .shop-item {
             background: #333; border: 2px solid #555; border-radius: 10px; padding: 15px;
@@ -168,7 +162,7 @@
         .dm-preview.unread { border-left: 5px solid #ff3b30; }
         .dm-time { font-size: 12px; color: #888; }
         .red-dot { width: 10px; height: 10px; background: #ff3b30; border-radius: 50%; box-shadow: 0 0 8px #ff3b30; }
-       
+      
         #chat-messages .bubble {
             padding: 12px 16px; margin: 8px 0; border-radius: 18px; max-width: 85%; text-align: left;
         }
@@ -187,7 +181,7 @@
 <body>
     <div id="money-display">💵 $0</div>
     <button id="btn-settings" class="btn" style="position: absolute; top: 80px; left: 20px; padding: 8px 12px; font-size: 22px;">⚙️</button>
-   
+  
     <!-- Phone button - JUST the icon + badge (no text) -->
     <button id="btn-social" class="btn" style="position: absolute; top: 140px; left: 20px; padding: 10px 12px; font-size: 22px; background: #1e88e5; color: white; border-color: #fff; display:flex; align-items:center; justify-content:center; width:58px; height:58px;">
         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -279,25 +273,25 @@
         <div class="modal-box" style="max-width:520px;">
             <button onclick="closeSocial()" style="position:absolute; top:15px; left:15px; font-size:28px; background:none; border:none; color:#fff; cursor:pointer;">✕</button>
             <div class="modal-title" style="color:#1e88e5;">Client Hub 💬</div>
-           
+          
             <!-- TABS -->
             <div class="social-tab-bar">
                 <button id="tab-btn-messages" onclick="switchSocialTab(0)" class="btn social-tab-btn" style="background:#1e88e5; color:white;">Messages</button>
                 <button id="tab-btn-ratings" onclick="switchSocialTab(1)" class="btn social-tab-btn">Ratings</button>
-                <button id="tab-btn-previous" onclick="switchSocialTab(2)" class="btn social-tab-btn">Previous Levels 📜</button>
+                <button id="tab-btn-previous" onclick="switchSocialTab(2)" class="btn social-tab-btn">Previous Levels </button>
             </div>
-           
+          
             <!-- MESSAGES CONTENT -->
             <div id="social-messages-content">
                 <div id="dm-list" style="max-height:380px; overflow-y:auto; padding:5px;"></div>
-               
+              
                 <div id="dm-chat" style="display:none;">
                     <button onclick="backToDMList()" class="btn" style="margin-bottom:15px; background:#333; color:#fff;">← Back to Messages</button>
                     <div id="chat-messages" style="max-height:280px; overflow-y:auto; margin-bottom:15px; display:flex; flex-direction:column;"></div>
                     <div id="reply-options" style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center;"></div>
                 </div>
             </div>
-           
+          
             <!-- RATINGS CONTENT -->
             <div id="social-ratings-content" style="display:none; text-align:center; padding:30px 20px;">
                 <div style="font-size:68px; letter-spacing:8px; margin-bottom:10px;" id="star-display">★★★☆☆</div>
@@ -306,7 +300,6 @@
                 <div style="margin-top:25px; font-size:15px; color:#666;">Based on <span id="review-count" style="color:#fff;">12</span> reviews</div>
                 <div style="margin-top:40px; font-size:13px; color:#888; line-height:1.4;">Every perfect cut makes your shop shine brighter!<br>Keep slaying those haircuts 💈</div>
             </div>
-
             <!-- PREVIOUS LEVELS CONTENT -->
             <div id="social-previous-content" style="display:none; padding:15px;">
                 <div id="previous-list" style="max-height:380px; overflow-y:auto;"></div>
@@ -333,33 +326,27 @@
         let money = parseInt(localStorage.getItem('barberMoney')) || 0;
         let shopRating = parseFloat(localStorage.getItem('barberRating')) || 3.5;
         let reviewCount = parseInt(localStorage.getItem('barberReviews')) || 0;
-
         let purchased = JSON.parse(localStorage.getItem('barberPurchased')) || {
             floor: false, neon: false, crimsonWalls: false, plant: false
         };
         let enabled = JSON.parse(localStorage.getItem('barberEnabled')) || {
             floor: false, neon: false, crimsonWalls: false, plant: false
         };
-
         let completedLevels = JSON.parse(localStorage.getItem('barberCompletedLevels')) || [];
-
         const oldUpgrades = JSON.parse(localStorage.getItem('barberUpgrades')) || {};
         if (oldUpgrades.floor) { purchased.floor = true; enabled.floor = true; }
         if (oldUpgrades.neon) { purchased.neon = true; enabled.neon = true; }
         if (oldUpgrades.vipBG) { purchased.crimsonWalls = true; enabled.crimsonWalls = true; }
         if (oldUpgrades.plant) { purchased.plant = true; enabled.plant = true; }
         if (Object.keys(oldUpgrades).length > 0) localStorage.removeItem('barberUpgrades');
-
         const shopData = [
             { id: 'floor', name: 'Gray Flooring', desc: 'Adds a sleek gray floor to your studio.', price: 100 },
             { id: 'crimsonWalls', name: 'Crimson Walls', desc: 'Exclusive high-end crimson atmosphere.', price: 200 },
             { id: 'plant', name: 'Bamboo Plant', desc: 'Adds some greenery to your studio.', price: 50 },
             { id: 'neon', name: 'Neon Ring', desc: 'Cool glowing light blue ring that spins in the background.', price: 150 }
         ];
-
         const skinColors = [0xf1c27d, 0x8d5524, 0xc68642, 0xe0ac69, 0x4a3123, 0xffdbac];
         const hairColors = [0x221100, 0x111111, 0x551100, 0x888888, 0xd4af37, 0x990000];
-
         function updateEconomyUI() {
             document.getElementById('money-display').innerText = `💵 $${money}`;
             document.getElementById('shop-balance').innerText = `$${money}`;
@@ -368,14 +355,12 @@
             localStorage.setItem('barberEnabled', JSON.stringify(enabled));
         }
         updateEconomyUI();
-
         const dialogues = {
             low: ["What the &*$# is this man?!?!","My wife and kids are going to see me like this??","I mean it’s not that bad","Terrible job man","Wow okay"],
             medium: ["I thought you were a professional barber?","It’s decent, but Larry gives better cuts","Thank you, see you next time!","Good job","It’s alright, do better next time"],
             high: ["Phenomenal","There are a few spots where you could do better","I’ll deal with it","It’s only hair","It’s that hard to give me a good haircut?"],
             perfect: ["You gave me a better haircut than Larry down the street could!","I have a lot more confidence now!","Wow, man this is awesome!","Dude thanks so much","Thank you, I really needed a good cut"]
         };
-
         const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
@@ -387,7 +372,6 @@
         const drapeGeo = new THREE.CylinderGeometry(1.8, 2.6, 4, 16);
         const drapeMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a });
         const drape = new THREE.Mesh(drapeGeo, drapeMat); drape.position.y = -1.5;
-
         function applyUpgradesToScene() {
             scene.background = new THREE.Color((purchased.crimsonWalls && enabled.crimsonWalls) ? 0x3d0c11 : 0x0f1c38);
             drapeMat.color.setHex(0x1a1a1a);
@@ -424,7 +408,6 @@
                 scene.add(plantGroup);
             } else if ((!purchased.plant || !enabled.plant) && plantGroup) { scene.remove(plantGroup); plantGroup = null; }
         }
-
         const characterGroup = new THREE.Group(); scene.add(characterGroup); characterGroup.add(drape);
         const headRadius = 1.35;
         const headGeo = new THREE.SphereGeometry(headRadius, 32, 32);
@@ -444,7 +427,6 @@
         let totalTasks = 0; let correctCuts = 0; let mistakes = 0; let levelIsActive = false;
         let requestFrames = []; let resultFrames = []; let spinFrameIndex = 0;
         let isTopView = false;
-
         const levels = [
             { name: "The Full Buzz", rule: (x, y, z) => 'cut' },
             { name: "The Mohawk", rule: (x, y, z) => (x < -0.4 || x > 0.4) ? 'cut' : 'full' },
@@ -464,7 +446,6 @@
             { name: "Tiny Mohawk", rule: (x, y, z) => (Math.abs(x) > 0.05 || Math.abs(z) > 1.0 || y < 0.45) ? 'cut' : 'full' },
             { name: "Rat Tail", rule: (x, y, z) => (Math.abs(x) < 0.15 && z < -0.3) ? 'full' : 'cut' }
         ];
-
         function loadLevel(levelNum) {
             applyUpgradesToScene();
             totalTasks = 0; correctCuts = 0; mistakes = 0; fallingHair = []; levelIsActive = false;
@@ -506,7 +487,6 @@
             document.getElementById('photo-modal').style.display = 'flex';
             localStorage.setItem('barberSaveLevel', currentLevel);
         }
-
         function takeSnapshot() {
             requestFrames = [];
             hairGroup.children.forEach(seg => { if (seg.userData.targetState === 'cut') seg.visible = false; });
@@ -520,7 +500,6 @@
             hairGroup.children.forEach(seg => { seg.visible = true; });
             updateCameraView();
         }
-
         setInterval(() => {
             if (requestFrames.length > 0) {
                 const reqSrc = requestFrames[spinFrameIndex % requestFrames.length];
@@ -530,19 +509,16 @@
             if (resultFrames.length > 0) document.getElementById('compare-result-img').src = resultFrames[spinFrameIndex % resultFrames.length];
             spinFrameIndex++;
         }, 120);
-
         function updateCameraView() {
             if (isTopView) camera.position.set(0, 5.0, 4.5); else camera.position.set(0, 2.5, 7);
             camera.lookAt(0, 1.5, 0);
         }
-
         function toggleView() {
             isTopView = !isTopView;
             const btn = document.getElementById('btn-angle');
             btn.innerText = isTopView ? '👆 Top View' : '📐 Side View';
             updateCameraView();
         }
-
         let currentTool = 'scissors';
         const toolIconDOM = document.getElementById('active-tool');
         function showGrabHint() { document.getElementById('grab-hint').style.opacity = '1'; }
@@ -562,10 +538,8 @@
         document.getElementById('btn-mini-scissors').addEventListener('click', () => switchTool('mini-scissors'));
         document.getElementById('btn-clippers').addEventListener('click', () => switchTool('clippers'));
         switchTool('scissors');
-
         const raycaster = new THREE.Raycaster(); const mouse = new THREE.Vector2();
         let isGrabbingTool = false; let targetChairRotation = 0;
-
         function onPointerDown(e) {
             if(e.target.tagName === 'BUTTON' || e.target.classList.contains('tool-btn')) return;
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -588,7 +562,6 @@
                 toolIconDOM.style.transform = 'translateY(-50%) rotate(0deg)';
             }
         }
-
         function evaluateHit(seg) {
             let current = seg.userData.currentState; let target = seg.userData.targetState;
             if (current === target) correctCuts++;
@@ -599,7 +572,6 @@
             document.body.style.backgroundColor = "#4a1111";
             setTimeout(() => { document.body.style.backgroundColor = (purchased.crimsonWalls && enabled.crimsonWalls) ? "#3d0c11" : "#111"; }, 100);
         }
-
         function updateInteraction(e) {
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
@@ -632,7 +604,6 @@
                 });
             }
         }
-
         function updateUI() {
             let progressRaw = (correctCuts / totalTasks) * 100;
             let progressPercent = Math.min(100, Math.floor(progressRaw || 0));
@@ -650,7 +621,6 @@
                 levelIsActive = false; setTimeout(() => { showLevelComplete(accuracyPercent); }, 800);
             }
         }
-
         function showLevelComplete(finalAccuracy) {
             onPointerUp(); resultFrames = [];
             camera.position.set(3, 3, 5); camera.lookAt(0, 1.5, 0);
@@ -680,7 +650,6 @@
             const randomDialogue = possibleDialogues[Math.floor(Math.random() * possibleDialogues.length)];
             document.getElementById('customer-dialogue').innerText = `"${randomDialogue}"`;
             document.getElementById('level-complete-modal').style.display = 'flex';
-
             // SAVE TO PREVIOUS LEVELS
             const levelData = levels[(currentLevel - 1) % levels.length];
             const levelRecord = {
@@ -694,7 +663,6 @@
             if (completedLevels.length > 50) completedLevels.pop();
             localStorage.setItem('barberCompletedLevels', JSON.stringify(completedLevels));
         }
-
         function openShop() {
             levelIsActive = false; onPointerUp();
             const container = document.getElementById('shop-items-container');
@@ -720,7 +688,6 @@
             });
             document.getElementById('shop-modal').style.display = 'flex';
         }
-
         window.buyItem = function(id, price) {
             if (money >= price && !purchased[id]) {
                 money -= price;
@@ -733,7 +700,6 @@
                 alert("Not enough money!");
             }
         };
-
         window.toggleUpgrade = function(id) {
             if (!purchased[id]) return;
             enabled[id] = !enabled[id];
@@ -741,17 +707,14 @@
             applyUpgradesToScene();
             openShop();
         };
-
         function closeShop() {
             document.getElementById('shop-modal').style.display = 'none';
             levelIsActive = true;
         }
-
         window.addEventListener('pointerdown', onPointerDown);
         window.addEventListener('pointermove', onPointerMove);
         window.addEventListener('pointerup', onPointerUp);
         window.addEventListener('pointercancel', onPointerUp);
-
         document.getElementById('btn-left').addEventListener('click', () => { targetChairRotation -= Math.PI / 4; });
         document.getElementById('btn-right').addEventListener('click', () => { targetChairRotation += Math.PI / 4; });
         document.getElementById('btn-angle').addEventListener('click', toggleView);
@@ -765,17 +728,14 @@
                 showLevelComplete(finalAccuracy);
             }
         });
-
         function closePhoto() { document.getElementById('photo-modal').style.display = 'none'; levelIsActive = true; showGrabHint(); }
         function startNextLevel() { document.getElementById('level-complete-modal').style.display = 'none'; currentLevel++; loadLevel(currentLevel); }
         function restartLevel() { document.getElementById('fail-modal').style.display = 'none'; loadLevel(currentLevel); }
-
-        window.addEventListener('resize', () => { 
-            camera.aspect = window.innerWidth / window.innerHeight; 
-            camera.updateProjectionMatrix(); 
-            renderer.setSize(window.innerWidth, window.innerHeight); 
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
         });
-
         // MUSIC
         const bgMusic = document.getElementById('bgMusic');
         let musicStarted = false; let isMusicOn = true; let currentSongIndex = 1;
@@ -785,21 +745,20 @@
         function toggleMusic() { isMusicOn = !isMusicOn; if (isMusicOn) playCurrentSong(); else bgMusic.pause(); updateMusicToggleUI(); }
         function updateMusicToggleUI() { const btn = document.getElementById('music-toggle-btn'); if (btn) btn.innerHTML = isMusicOn ? '🔊 Music: ON' : '🔇 Music: OFF'; }
         function switchSong(index) { currentSongIndex = index; if (isMusicOn && musicStarted) playCurrentSong(); renderSongList(); }
-        function renderSongList() { 
-            const container = document.getElementById('song-list'); 
-            let html = ''; 
-            songs.forEach((song, i) => { 
-                const active = (i === currentSongIndex) ? 'playing' : ''; 
-                html += `<div class="song-item ${active}" onclick="switchSong(${i})">${song.name}</div>`; 
-            }); 
-            container.innerHTML = html; 
+        function renderSongList() {
+            const container = document.getElementById('song-list');
+            let html = '';
+            songs.forEach((song, i) => {
+                const active = (i === currentSongIndex) ? 'playing' : '';
+                html += `<div class="song-item ${active}" onclick="switchSong(${i})">${song.name}</div>`;
+            });
+            container.innerHTML = html;
         }
         function openSettings() { levelIsActive = false; onPointerUp(); renderSongList(); updateMusicToggleUI(); document.getElementById('settings-modal').style.display = 'flex'; }
         function closeSettings() { document.getElementById('settings-modal').style.display = 'none'; levelIsActive = true; }
-
         // ==================== FIXED CONVERSATION SYSTEM (coherent replies) ====================
-        let dms = [];
-        let unreadCount = 0;
+        let dms = JSON.parse(localStorage.getItem('barberDMs')) || [];
+        let unreadCount = dms.filter(dm => !dm.read).length;
         let currentOpenDMId = null;
         let currentSocialTab = 0;
         const clientMessages = [
@@ -844,7 +803,6 @@
                 followUp: "Great, we'll come by soon! Thanks bro"
             }
         ];
-
         function addRandomDM() {
             const template = clientMessages[Math.floor(Math.random() * clientMessages.length)];
             const newDM = {
@@ -862,8 +820,8 @@
             unreadCount++;
             updateSocialBadge();
             if (document.getElementById('social-modal').style.display === 'flex' && currentSocialTab === 0) renderDMList();
+            localStorage.setItem('barberDMs', JSON.stringify(dms));
         }
-
         function updateSocialBadge() {
             const badge = document.getElementById('social-badge');
             if (unreadCount > 0) {
@@ -871,7 +829,6 @@
                 badge.style.display = 'flex';
             } else badge.style.display = 'none';
         }
-
         function renderDMList() {
             const container = document.getElementById('dm-list');
             container.innerHTML = '';
@@ -896,19 +853,18 @@
                 container.appendChild(div);
             });
         }
-
         function openDM(id) {
             currentOpenDMId = id;
             const dm = dms.find(d => d.id === id);
             if (!dm) return;
-           
+          
             document.getElementById('dm-list').style.display = 'none';
             const chat = document.getElementById('dm-chat');
             chat.style.display = 'block';
-           
+          
             const messagesDiv = document.getElementById('chat-messages');
             messagesDiv.innerHTML = `<div class="bubble customer-bubble">${dm.text}</div>`;
-           
+          
             if (dm.replied) {
                 messagesDiv.innerHTML += `
                     <div class="bubble player-bubble">${dm.yourReply}</div>
@@ -928,38 +884,37 @@
                     optionsDiv.appendChild(btn);
                 });
             }
-           
+          
             dm.read = true;
             unreadCount = Math.max(0, unreadCount - 1);
             updateSocialBadge();
             renderDMList();
+            localStorage.setItem('barberDMs', JSON.stringify(dms));
         }
-
         function sendReply(choiceIndex) {
             const dm = dms.find(d => d.id === currentOpenDMId);
             if (!dm || dm.replied) return;
-           
+          
             const yourText = dm.replyOptions[choiceIndex];
             const custReply = dm.followUp;
-           
+          
             dm.yourReply = yourText;
             dm.customerReply = custReply;
             dm.replied = true;
-           
+          
             const messagesDiv = document.getElementById('chat-messages');
             messagesDiv.innerHTML += `
                 <div class="bubble player-bubble">${yourText}</div>
                 <div class="bubble customer-bubble">${custReply}</div>
             `;
             document.getElementById('reply-options').innerHTML = '<p style="color:#4CAF50; font-weight:bold; padding:10px;">✓ Replied — they loved it!</p>';
+            localStorage.setItem('barberDMs', JSON.stringify(dms));
         }
-
         function backToDMList() {
             document.getElementById('dm-chat').style.display = 'none';
             document.getElementById('dm-list').style.display = 'block';
             renderDMList();
         }
-
         // RATINGS
         function updateRatingDisplay() {
             const r = shopRating.toFixed(1);
@@ -978,7 +933,6 @@
             document.getElementById('rating-description').innerText = desc;
             document.getElementById('review-count').innerText = reviewCount;
         }
-
         function renderPreviousList() {
             const container = document.getElementById('previous-list');
             container.innerHTML = '';
@@ -996,14 +950,13 @@
                         <div style="font-size:15px; color:${accColor};">Accuracy: ${rec.accuracy}%</div>
                     </div>
                     <div style="width:68px; height:68px; border:3px solid #555; border-radius:8px; overflow:hidden;">
-                        <img src="${rec.requestImages[0]}" style="width:100%; height:100%; object-fit:cover;">
+                        <img src="${rec.resultImages[0]}" style="width:100%; height:100%; object-fit:cover;">
                     </div>
                 `;
                 div.onclick = () => openPreviousDetail(idx);
                 container.appendChild(div);
             });
         }
-
         function openPreviousDetail(idx) {
             const rec = completedLevels[idx];
             if (!rec) return;
@@ -1025,7 +978,6 @@
                 detailSpinIdx++;
             }, 120);
         }
-
         function backToPreviousList() {
             if (window.detailSpinInterval) {
                 clearInterval(window.detailSpinInterval);
@@ -1035,7 +987,6 @@
             document.getElementById('previous-list').style.display = 'block';
             renderPreviousList();
         }
-
         function switchSocialTab(tab) {
             currentSocialTab = tab;
             document.getElementById('social-messages-content').style.display = tab === 0 ? 'block' : 'none';
@@ -1047,14 +998,12 @@
             if (tab === 1) updateRatingDisplay();
             if (tab === 2) renderPreviousList();
         }
-
         function openSocial() {
             levelIsActive = false; onPointerUp();
             document.getElementById('social-modal').style.display = 'flex';
             switchSocialTab(0);
             renderDMList();
         }
-
         function closeSocial() {
             document.getElementById('social-modal').style.display = 'none';
             levelIsActive = true;
@@ -1063,17 +1012,14 @@
                 window.detailSpinInterval = null;
             }
         }
-
         function scheduleNextDM() {
             const delay = 30000 + Math.random() * 60000;
             setTimeout(() => { addRandomDM(); scheduleNextDM(); }, delay);
         }
-
         // EVENT LISTENERS
         document.getElementById('btn-settings').addEventListener('click', openSettings);
         document.getElementById('btn-social').addEventListener('click', openSocial);
         document.addEventListener('click', startBackgroundMusic, { once: true });
-
         function animate() {
             requestAnimationFrame(animate);
             characterGroup.rotation.y += (targetChairRotation - characterGroup.rotation.y) * 0.1;
@@ -1090,11 +1036,22 @@
             }
             renderer.render(scene, camera);
         }
-
         loadLevel(currentLevel);
         updateCameraView();
         animate();
         setTimeout(() => { scheduleNextDM(); }, 15000);
+
+        // AUTO-SAVE EVERY 10 SECONDS (levels + messages + all progress)
+        setInterval(() => {
+            localStorage.setItem('barberCompletedLevels', JSON.stringify(completedLevels));
+            localStorage.setItem('barberDMs', JSON.stringify(dms));
+            localStorage.setItem('barberSaveLevel', currentLevel);
+            localStorage.setItem('barberMoney', money);
+            localStorage.setItem('barberRating', shopRating);
+            localStorage.setItem('barberReviews', reviewCount);
+            localStorage.setItem('barberPurchased', JSON.stringify(purchased));
+            localStorage.setItem('barberEnabled', JSON.stringify(enabled));
+        }, 10000);
     </script>
 </body>
 </html>
