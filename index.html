@@ -11,7 +11,7 @@
             touch-action: none; color: white;
         }
         #canvas-container { width: 100vw; height: 100vh; display: block; }
-   
+ 
         /* Top UI Dashboard */
         #ui-top {
             position: absolute; top: 15px; left: 50%; transform: translateX(-50%);
@@ -27,7 +27,7 @@
         }
         #progress-bar { width: 0%; height: 100%; background-color: #4CAF50; transition: width 0.2s; }
         #accuracy-bar { width: 100%; height: 100%; background-color: #2196F3; transition: width 0.2s; }
-   
+ 
         /* Money Display */
         #money-display {
             position: absolute; top: 20px; left: 20px; font-size: 24px; font-weight: bold;
@@ -43,7 +43,7 @@
         }
         .btn:active { transform: scale(0.95); }
         .btn-shop { background: #9c27b0; color: white; border-color: #fff; }
-   
+ 
         #ui-bottom {
             position: absolute; bottom: 30px; left: 0; width: 100%;
             display: flex; justify-content: center; gap: 10px; pointer-events: none; z-index: 10;
@@ -61,7 +61,6 @@
             background: #ffc107; border-color: #fff; transform: scale(1.1);
             box-shadow: 0 0 15px rgba(255, 193, 7, 0.6);
         }
-        /* Mini scissors button looks smaller to feel "mini" */
         #btn-mini-scissors {
             font-size: 19px !important;
             padding: 13px !important;
@@ -85,7 +84,6 @@
             transition: font-size 0.2s ease;
         }
         #active-tool:active { cursor: grabbing; }
-        /* NEW: Grab hint */
         #grab-hint {
             position: absolute;
             top: 50%;
@@ -113,14 +111,13 @@
             position: relative;
         }
         .modal-title { font-size: 28px; font-weight: bold; margin-bottom: 15px; color: #ffc107; }
-   
+ 
         .comparison-container { display: flex; justify-content: space-around; align-items: center; gap: 10px; margin: 15px 0; }
         .comparison-col { flex: 1; display: flex; flex-direction: column; align-items: center; }
         .comparison-col img { width: 100%; max-width: 250px; border-radius: 10px; border: 2px solid #555; background: #2a2a35; }
-   
+ 
         .earnings-display { font-size: 24px; font-weight: bold; color: #ffeb3b; margin: 10px 0; }
         .accuracy-display { font-size: 32px; font-weight: bold; margin: 10px 0; }
-        /* NEW: Customer dialogue */
         #customer-dialogue {
             font-size: 20px;
             font-weight: bold;
@@ -135,7 +132,7 @@
             box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
             line-height: 1.4;
         }
-   
+ 
         /* Shop Styles */
         .shop-item {
             background: #333; border: 2px solid #555; border-radius: 10px; padding: 15px;
@@ -145,8 +142,6 @@
         .shop-info { text-align: left; }
         .shop-title { font-size: 18px; font-weight: bold; color: #fff; }
         .shop-desc { font-size: 12px; color: #aaa; margin-top: 4px; }
-
-        /* NEW: Song list in settings */
         .song-item {
             background: #333;
             border: 2px solid transparent;
@@ -157,13 +152,34 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-        .song-item:hover {
-            background: #444;
-        }
+        .song-item:hover { background: #444; }
         .song-item.playing {
             border-color: #4CAF50;
             background: #2e4a2e;
             box-shadow: 0 0 10px #4CAF50;
+        }
+        /* Client Messages */
+        .dm-preview {
+            background: #333; padding: 14px; margin: 8px 0; border-radius: 12px;
+            display: flex; justify-content: space-between; align-items: center; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .dm-preview:hover { background: #444; }
+        .dm-preview.unread { border-left: 5px solid #ff3b30; }
+        .dm-time { font-size: 12px; color: #888; }
+        .red-dot { width: 10px; height: 10px; background: #ff3b30; border-radius: 50%; box-shadow: 0 0 8px #ff3b30; }
+       
+        #chat-messages .bubble {
+            padding: 12px 16px; margin: 8px 0; border-radius: 18px; max-width: 85%; text-align: left;
+        }
+        .customer-bubble { background: #444; align-self: flex-start; }
+        .player-bubble { background: #4CAF50; color: #111; align-self: flex-end; }
+        /* Tab style */
+        .social-tab-bar {
+            display: flex; background: #333; border-radius: 10px; padding: 4px; margin: 15px 0;
+        }
+        .social-tab-btn {
+            flex: 1; margin: 2px; font-weight: bold;
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -171,6 +187,15 @@
 <body>
     <div id="money-display">💵 $0</div>
     <button id="btn-settings" class="btn" style="position: absolute; top: 80px; left: 20px; padding: 8px 12px; font-size: 22px;">⚙️</button>
+   
+    <!-- Phone button - JUST the icon + badge (no text) -->
+    <button id="btn-social" class="btn" style="position: absolute; top: 140px; left: 20px; padding: 10px 12px; font-size: 22px; background: #1e88e5; color: white; border-color: #fff; display:flex; align-items:center; justify-content:center; width:58px; height:58px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+            <line x1="12" y1="18" x2="12" y2="18"></line>
+        </svg>
+        <span id="social-badge" style="position:absolute; top:-6px; right:-6px; background:#ff3b30; color:white; font-size:11px; width:19px; height:19px; border-radius:50%; display:none; align-items:center; justify-content:center; box-shadow:0 0 10px #ff3b30; font-weight:bold;">0</span>
+    </button>
     <div id="ui-top">
         <div class="header-text">
             <span id="level-text">Level 1</span>
@@ -212,9 +237,7 @@
             <button onclick="closeShop()" style="position:absolute; top:15px; left:15px; font-size:28px; background:none; border:none; color:#fff; cursor:pointer;">✕</button>
             <div class="modal-title" style="color: #9c27b0;">Studio Upgrades 🛒</div>
             <p>Current Balance: <span id="shop-balance" style="color:#4CAF50; font-weight:bold;">$0</span></p>
-       
             <div id="shop-items-container"></div>
-       
             <br>
             <button class="btn" onclick="closeShop()">Back to Shop ➔</button>
         </div>
@@ -236,12 +259,10 @@
                 <div class="comparison-col"><img id="compare-result-img" src=""><div style="color:#ddd; margin-top:5px;">Your Cut</div></div>
             </div>
             <button class="btn" onclick="startNextLevel()">Next Client ➔</button>
-            <!-- Customer dialogue added here (button is now directly above it) -->
             <div id="customer-dialogue"></div>
         </div>
     </div>
-
-    <!-- NEW SETTINGS MODAL -->
+    <!-- SETTINGS MODAL -->
     <div id="settings-modal" class="modal-overlay">
         <div class="modal-box">
             <button onclick="closeSettings()" style="position:absolute; top:15px; left:15px; font-size:28px; background:none; border:none; color:#fff; cursor:pointer;">✕</button>
@@ -253,36 +274,92 @@
             <button class="btn" onclick="closeSettings()">Close Settings</button>
         </div>
     </div>
+    <!-- CLIENT HUB MODAL -->
+    <div id="social-modal" class="modal-overlay">
+        <div class="modal-box" style="max-width:520px;">
+            <button onclick="closeSocial()" style="position:absolute; top:15px; left:15px; font-size:28px; background:none; border:none; color:#fff; cursor:pointer;">✕</button>
+            <div class="modal-title" style="color:#1e88e5;">Client Hub 💬</div>
+           
+            <!-- TABS -->
+            <div class="social-tab-bar">
+                <button id="tab-btn-messages" onclick="switchSocialTab(0)" class="btn social-tab-btn" style="background:#1e88e5; color:white;">Messages</button>
+                <button id="tab-btn-ratings" onclick="switchSocialTab(1)" class="btn social-tab-btn">Ratings</button>
+                <button id="tab-btn-previous" onclick="switchSocialTab(2)" class="btn social-tab-btn">Previous Levels 📜</button>
+            </div>
+           
+            <!-- MESSAGES CONTENT -->
+            <div id="social-messages-content">
+                <div id="dm-list" style="max-height:380px; overflow-y:auto; padding:5px;"></div>
+               
+                <div id="dm-chat" style="display:none;">
+                    <button onclick="backToDMList()" class="btn" style="margin-bottom:15px; background:#333; color:#fff;">← Back to Messages</button>
+                    <div id="chat-messages" style="max-height:280px; overflow-y:auto; margin-bottom:15px; display:flex; flex-direction:column;"></div>
+                    <div id="reply-options" style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center;"></div>
+                </div>
+            </div>
+           
+            <!-- RATINGS CONTENT -->
+            <div id="social-ratings-content" style="display:none; text-align:center; padding:30px 20px;">
+                <div style="font-size:68px; letter-spacing:8px; margin-bottom:10px;" id="star-display">★★★☆☆</div>
+                <div id="rating-number" style="font-size:48px; font-weight:bold; color:#4CAF50; margin-bottom:8px;">3.8</div>
+                <div id="rating-description" style="font-size:19px; color:#ffc107; font-weight:bold; min-height:54px;"></div>
+                <div style="margin-top:25px; font-size:15px; color:#666;">Based on <span id="review-count" style="color:#fff;">12</span> reviews</div>
+                <div style="margin-top:40px; font-size:13px; color:#888; line-height:1.4;">Every perfect cut makes your shop shine brighter!<br>Keep slaying those haircuts 💈</div>
+            </div>
 
+            <!-- PREVIOUS LEVELS CONTENT -->
+            <div id="social-previous-content" style="display:none; padding:15px;">
+                <div id="previous-list" style="max-height:380px; overflow-y:auto;"></div>
+                <div id="previous-detail" style="display:none; text-align:center;">
+                    <button onclick="backToPreviousList()" class="btn" style="margin-bottom:15px;">← Back to List</button>
+                    <h2 id="detail-level-name" style="color:#ffc107; font-size:26px; margin-bottom:15px;"></h2>
+                    <div style="display:flex; justify-content:center; gap:30px; margin:20px 0;">
+                        <div style="text-align:center;">
+                            <img id="detail-request-img" style="width:180px; border:3px solid #555; border-radius:12px; background:#2a2a35;">
+                            <div style="margin-top:8px; color:#aaa; font-size:14px;">Client Request</div>
+                        </div>
+                        <div style="text-align:center;">
+                            <img id="detail-result-img" style="width:180px; border:3px solid #555; border-radius:12px; background:#2a2a35;">
+                            <div style="margin-top:8px; color:#aaa; font-size:14px;">Your Cut</div>
+                        </div>
+                    </div>
+                    <div id="detail-accuracy-display" style="font-size:32px; font-weight:bold;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
     <audio id="bgMusic" loop preload="none"></audio>
-
     <script>
         let money = parseInt(localStorage.getItem('barberMoney')) || 0;
-    
+        let shopRating = parseFloat(localStorage.getItem('barberRating')) || 3.5;
+        let reviewCount = parseInt(localStorage.getItem('barberReviews')) || 0;
+
         let purchased = JSON.parse(localStorage.getItem('barberPurchased')) || {
-            floor: false, neon: false, goldChair: false, vipBG: false,
-            proLights: false, plant: false
+            floor: false, neon: false, crimsonWalls: false, plant: false
         };
         let enabled = JSON.parse(localStorage.getItem('barberEnabled')) || {
-            floor: false, neon: false, goldChair: false, vipBG: false,
-            proLights: false, plant: false
+            floor: false, neon: false, crimsonWalls: false, plant: false
         };
+
+        let completedLevels = JSON.parse(localStorage.getItem('barberCompletedLevels')) || [];
+
         const oldUpgrades = JSON.parse(localStorage.getItem('barberUpgrades')) || {};
-        ['floor','neon','goldChair','vipBG','proLights','plant'].forEach(key => {
-            if (oldUpgrades.hasOwnProperty(key)) {
-                purchased[key] = oldUpgrades[key];
-                enabled[key] = oldUpgrades[key];
-            }
-        });
+        if (oldUpgrades.floor) { purchased.floor = true; enabled.floor = true; }
+        if (oldUpgrades.neon) { purchased.neon = true; enabled.neon = true; }
+        if (oldUpgrades.vipBG) { purchased.crimsonWalls = true; enabled.crimsonWalls = true; }
+        if (oldUpgrades.plant) { purchased.plant = true; enabled.plant = true; }
         if (Object.keys(oldUpgrades).length > 0) localStorage.removeItem('barberUpgrades');
+
         const shopData = [
-            { id: 'floor', name: 'Tile Floor', desc: 'Adds a sleek floor to your studio.', price: 50 },
-            { id: 'neon', name: 'Neon Studio Ring', desc: 'Cool glowing decor in the background.', price: 150 },
-            { id: 'goldChair', name: 'Gold Barber Cape', desc: 'Premium luxury for your clients.', price: 300 },
-            { id: 'vipBG', name: 'VIP Crimson Walls', desc: 'Exclusive high-end atmosphere.', price: 600 },
-            { id: 'proLights', name: 'Pro Lighting Kit', desc: 'Brighter studio lights for perfect cuts.', price: 120 },
-            { id: 'plant', name: 'Bamboo Plant', desc: 'Adds some greenery to the studio.', price: 80 }
+            { id: 'floor', name: 'Gray Flooring', desc: 'Adds a sleek gray floor to your studio.', price: 100 },
+            { id: 'crimsonWalls', name: 'Crimson Walls', desc: 'Exclusive high-end crimson atmosphere.', price: 200 },
+            { id: 'plant', name: 'Bamboo Plant', desc: 'Adds some greenery to your studio.', price: 50 },
+            { id: 'neon', name: 'Neon Ring', desc: 'Cool glowing light blue ring that spins in the background.', price: 150 }
         ];
+
+        const skinColors = [0xf1c27d, 0x8d5524, 0xc68642, 0xe0ac69, 0x4a3123, 0xffdbac];
+        const hairColors = [0x221100, 0x111111, 0x551100, 0x888888, 0xd4af37, 0x990000];
+
         function updateEconomyUI() {
             document.getElementById('money-display').innerText = `💵 $${money}`;
             document.getElementById('shop-balance').innerText = `$${money}`;
@@ -291,121 +368,64 @@
             localStorage.setItem('barberEnabled', JSON.stringify(enabled));
         }
         updateEconomyUI();
+
         const dialogues = {
-            low: [
-                "What the &*$# is this man?!?!",
-                "My wife and kids are going to see me like this??",
-                "I mean it’s not that bad",
-                "Terrible job man",
-                "Wow okay"
-            ],
-            medium: [
-                "I thought you were a professional barber?",
-                "It’s decent, but Larry gives better cuts",
-                "Thank you, see you next time!",
-                "Good job",
-                "It’s alright, do better next time"
-            ],
-            high: [
-                "Phenomenal",
-                "There are a few spots where you could do better",
-                "I’ll deal with it",
-                "It’s only hair",
-                "It’s that hard to give me a good haircut?"
-            ],
-            perfect: [
-                "You gave me a better haircut than Larry down the street could!",
-                "I have a lot more confidence now!",
-                "Wow, man this is awesome!",
-                "Dude thanks so much",
-                "Thank you, I really needed a good cut"
-            ]
+            low: ["What the &*$# is this man?!?!","My wife and kids are going to see me like this??","I mean it’s not that bad","Terrible job man","Wow okay"],
+            medium: ["I thought you were a professional barber?","It’s decent, but Larry gives better cuts","Thank you, see you next time!","Good job","It’s alright, do better next time"],
+            high: ["Phenomenal","There are a few spots where you could do better","I’ll deal with it","It’s only hair","It’s that hard to give me a good haircut?"],
+            perfect: ["You gave me a better haircut than Larry down the street could!","I have a lot more confidence now!","Wow, man this is awesome!","Dude thanks so much","Thank you, I really needed a good cut"]
         };
+
         const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
-   
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.8); scene.add(ambientLight);
         const spotLight = new THREE.SpotLight(0xffeedd, 0.8); spotLight.position.set(0, 8, 6); scene.add(spotLight);
-        let floorMesh = null;
-        let neonMesh = null;
-        let plantGroup = null;
+        let floorMesh = null; let neonMesh = null; let plantGroup = null;
         const drapeGeo = new THREE.CylinderGeometry(1.8, 2.6, 4, 16);
         const drapeMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a });
         const drape = new THREE.Mesh(drapeGeo, drapeMat); drape.position.y = -1.5;
+
         function applyUpgradesToScene() {
-            scene.background = new THREE.Color(
-                (purchased.vipBG && enabled.vipBG) ? 0x3d0c11 : 0x2a2a35
-            );
-            drapeMat.color.setHex(
-                (purchased.goldChair && enabled.goldChair) ? 0xd4af37 : 0x1a1a1a
-            );
-            drapeMat.metalness = (purchased.goldChair && enabled.goldChair) ? 0.6 : 0.1;
-            drapeMat.roughness = (purchased.goldChair && enabled.goldChair) ? 0.2 : 0.8;
-            const lightsOn = purchased.proLights && enabled.proLights;
-            ambientLight.intensity = lightsOn ? 1.0 : 0.8;
-            spotLight.intensity = lightsOn ? 1.2 : 0.8;
+            scene.background = new THREE.Color((purchased.crimsonWalls && enabled.crimsonWalls) ? 0x3d0c11 : 0x0f1c38);
+            drapeMat.color.setHex(0x1a1a1a);
+            drapeMat.metalness = 0.1;
+            drapeMat.roughness = 0.8;
+            ambientLight.intensity = 0.8;
+            spotLight.intensity = 0.8;
             if (purchased.floor && enabled.floor && !floorMesh) {
                 const floorGeo = new THREE.PlaneGeometry(20, 20);
-                const floorMat = new THREE.MeshStandardMaterial({ color: 0x555555, roughness: 0.2 });
+                const floorMat = new THREE.MeshStandardMaterial({ color: 0x666666, roughness: 0.2 });
                 floorMesh = new THREE.Mesh(floorGeo, floorMat);
-                floorMesh.rotation.x = -Math.PI / 2;
-                floorMesh.position.y = -3.5;
-                scene.add(floorMesh);
-            } else if ((!purchased.floor || !enabled.floor) && floorMesh) {
-                scene.remove(floorMesh);
-                floorMesh = null;
-            }
+                floorMesh.rotation.x = -Math.PI / 2; floorMesh.position.y = -3.5; scene.add(floorMesh);
+            } else if ((!purchased.floor || !enabled.floor) && floorMesh) { scene.remove(floorMesh); floorMesh = null; }
             if (purchased.neon && enabled.neon && !neonMesh) {
                 const neonGeo = new THREE.TorusGeometry(5, 0.1, 16, 100);
                 const neonMat = new THREE.MeshBasicMaterial({ color: 0x00ffff });
-                neonMesh = new THREE.Mesh(neonGeo, neonMat);
-                neonMesh.position.set(0, 2, -6);
-                scene.add(neonMesh);
-            } else if ((!purchased.neon || !enabled.neon) && neonMesh) {
-                scene.remove(neonMesh);
-                neonMesh = null;
-            }
+                neonMesh = new THREE.Mesh(neonGeo, neonMat); neonMesh.position.set(0, 2, -6); scene.add(neonMesh);
+            } else if ((!purchased.neon || !enabled.neon) && neonMesh) { scene.remove(neonMesh); neonMesh = null; }
             if (purchased.plant && enabled.plant && !plantGroup) {
                 plantGroup = new THREE.Group();
-                const potGeo = new THREE.CylinderGeometry(0.3, 0.38, 0.65, 12);
-                const potMat = new THREE.MeshStandardMaterial({ color: 0x8B4513, roughness: 0.9 });
-                const pot = new THREE.Mesh(potGeo, potMat);
-                pot.position.set(4.5, -3.15, -2);
-                plantGroup.add(pot);
-                const soilGeo = new THREE.CylinderGeometry(0.27, 0.27, 0.1, 12);
-                const soilMat = new THREE.MeshStandardMaterial({ color: 0x3d2a1f });
-                const soil = new THREE.Mesh(soilGeo, soilMat);
-                soil.position.set(4.5, -2.80, -2);
-                plantGroup.add(soil);
+                const potGeo = new THREE.CylinderGeometry(0.3, 0.38, 0.65, 12); const potMat = new THREE.MeshStandardMaterial({ color: 0x8B4513, roughness: 0.9 });
+                const pot = new THREE.Mesh(potGeo, potMat); pot.position.set(4.5, -3.15, -2); plantGroup.add(pot);
+                const soilGeo = new THREE.CylinderGeometry(0.27, 0.27, 0.1, 12); const soilMat = new THREE.MeshStandardMaterial({ color: 0x3d2a1f });
+                const soil = new THREE.Mesh(soilGeo, soilMat); soil.position.set(4.5, -2.80, -2); plantGroup.add(soil);
                 const greenMat = new THREE.MeshStandardMaterial({ color: 0x2e8b57, roughness: 0.8 });
-                const stemGeo = new THREE.CylinderGeometry(0.06, 0.04, 2.3, 8);
-                const stem = new THREE.Mesh(stemGeo, greenMat);
-                stem.position.set(4.5, -2.45, -2);
-                plantGroup.add(stem);
+                const stemGeo = new THREE.CylinderGeometry(0.06, 0.04, 2.3, 8); const stem = new THREE.Mesh(stemGeo, greenMat); stem.position.set(4.5, -2.45, -2); plantGroup.add(stem);
                 for (let i = 0; i < 7; i++) {
-                    const leafGeo = new THREE.ConeGeometry(0.22, 0.75, 4);
-                    const leaf = new THREE.Mesh(leafGeo, greenMat);
+                    const leafGeo = new THREE.ConeGeometry(0.22, 0.75, 4); const leaf = new THREE.Mesh(leafGeo, greenMat);
                     const angle = (i / 7) * Math.PI * 2 + (i % 2) * 0.3;
-                    leaf.position.set(
-                        4.5 + Math.cos(angle) * 0.25,
-                        -2.45 + 0.6 + i * 0.22,
-                        -2 + Math.sin(angle) * 0.25
-                    );
+                    leaf.position.set(4.5 + Math.cos(angle) * 0.25, -2.45 + 0.6 + i * 0.22, -2 + Math.sin(angle) * 0.25);
                     leaf.rotation.set(Math.PI / 2, angle + 1.2, Math.random() * 0.4 - 0.2);
                     plantGroup.add(leaf);
                 }
                 scene.add(plantGroup);
-            } else if ((!purchased.plant || !enabled.plant) && plantGroup) {
-                scene.remove(plantGroup);
-                plantGroup = null;
-            }
+            } else if ((!purchased.plant || !enabled.plant) && plantGroup) { scene.remove(plantGroup); plantGroup = null; }
         }
-        const characterGroup = new THREE.Group();
-        scene.add(characterGroup);
-        characterGroup.add(drape);
+
+        const characterGroup = new THREE.Group(); scene.add(characterGroup); characterGroup.add(drape);
         const headRadius = 1.35;
         const headGeo = new THREE.SphereGeometry(headRadius, 32, 32);
         const skinMat = new THREE.MeshStandardMaterial({ roughness: 0.5 });
@@ -418,16 +438,13 @@
         const mouthMat = new THREE.MeshBasicMaterial({ color: 0x331111 });
         const mouth = new THREE.Mesh(mouthGeo, mouthMat); mouth.position.set(0, 1.2, 1.3);
         characterGroup.add(leftEye, rightEye, mouth);
-        const hairGroup = new THREE.Group();
-        characterGroup.add(hairGroup);
+        const hairGroup = new THREE.Group(); characterGroup.add(hairGroup);
         let fallingHair = [];
         let currentLevel = parseInt(localStorage.getItem('barberSaveLevel')) || 1;
         let totalTasks = 0; let correctCuts = 0; let mistakes = 0; let levelIsActive = false;
         let requestFrames = []; let resultFrames = []; let spinFrameIndex = 0;
         let isTopView = false;
-   
-        const skinColors = [0xf1c27d, 0x8d5524, 0xc68642, 0xe0ac69, 0x4a3123, 0xffdbac];
-        const hairColors = [0x221100, 0x111111, 0x551100, 0x888888, 0xd4af37, 0x990000];
+
         const levels = [
             { name: "The Full Buzz", rule: (x, y, z) => 'cut' },
             { name: "The Mohawk", rule: (x, y, z) => (x < -0.4 || x > 0.4) ? 'cut' : 'full' },
@@ -444,20 +461,20 @@
             { name: "The Quiff", rule: (x, y, z) => (y > 0.55 && z < 0.1) ? 'full' : 'cut' },
             { name: "Mullet", rule: (x, y, z) => (Math.abs(x) < 0.80 && y > 0.5) ? 'full' : 'cut' },
             { name: "The Classic", rule: (x, y, z) => (y > 0.05 && Math.abs(x) < 1.2 && z < 1.8) ? 'full' : 'cut' },
-            { name: "Tiny Mohawk", rule: (x, y, z) => (Math.abs(x) > 0.05 || Math.abs(z) > 1.0 || y < 0.45) ? 'cut' : 'full' }
+            { name: "Tiny Mohawk", rule: (x, y, z) => (Math.abs(x) > 0.05 || Math.abs(z) > 1.0 || y < 0.45) ? 'cut' : 'full' },
+            { name: "Rat Tail", rule: (x, y, z) => (Math.abs(x) < 0.15 && z < -0.3) ? 'full' : 'cut' }
         ];
+
         function loadLevel(levelNum) {
             applyUpgradesToScene();
             totalTasks = 0; correctCuts = 0; mistakes = 0; fallingHair = []; levelIsActive = false;
             document.getElementById('btn-force-finish').style.display = 'none';
             document.getElementById('fail-modal').style.display = 'none';
-       
             while(hairGroup.children.length > 0){ hairGroup.remove(hairGroup.children[0]); }
             characterGroup.rotation.y = 0;
             const levelData = levels[(levelNum - 1) % levels.length];
             skinMat.color.setHex(skinColors[Math.floor(Math.random() * skinColors.length)]);
             const hairMat = new THREE.MeshStandardMaterial({ color: hairColors[Math.floor(Math.random() * hairColors.length)], roughness: 1.0 });
-       
             const isMessy = Math.random() > 0.5;
             const baseLength = isMessy ? 0.25 : 0.16;
             const latSteps = 24 + Math.floor(Math.random() * 8);
@@ -466,7 +483,6 @@
                 let radiusAtLat = headRadius * Math.sin(phi);
                 let circumference = 2 * Math.PI * radiusAtLat;
                 let lonSteps = Math.max(1, Math.floor(circumference / 0.12));
-           
                 for (let lon = 0; lon < lonSteps; lon++) {
                     let theta = (lon / lonSteps) * Math.PI * 2;
                     let x = headRadius * Math.sin(phi) * Math.cos(theta);
@@ -490,6 +506,7 @@
             document.getElementById('photo-modal').style.display = 'flex';
             localStorage.setItem('barberSaveLevel', currentLevel);
         }
+
         function takeSnapshot() {
             requestFrames = [];
             hairGroup.children.forEach(seg => { if (seg.userData.targetState === 'cut') seg.visible = false; });
@@ -503,6 +520,7 @@
             hairGroup.children.forEach(seg => { seg.visible = true; });
             updateCameraView();
         }
+
         setInterval(() => {
             if (requestFrames.length > 0) {
                 const reqSrc = requestFrames[spinFrameIndex % requestFrames.length];
@@ -512,37 +530,28 @@
             if (resultFrames.length > 0) document.getElementById('compare-result-img').src = resultFrames[spinFrameIndex % resultFrames.length];
             spinFrameIndex++;
         }, 120);
+
         function updateCameraView() {
-            if (isTopView) {
-                camera.position.set(0, 5.0, 4.5);
-            } else {
-                camera.position.set(0, 2.5, 7);
-            }
+            if (isTopView) camera.position.set(0, 5.0, 4.5); else camera.position.set(0, 2.5, 7);
             camera.lookAt(0, 1.5, 0);
         }
+
         function toggleView() {
             isTopView = !isTopView;
             const btn = document.getElementById('btn-angle');
             btn.innerText = isTopView ? '👆 Top View' : '📐 Side View';
             updateCameraView();
         }
+
         let currentTool = 'scissors';
         const toolIconDOM = document.getElementById('active-tool');
-        function showGrabHint() {
-            document.getElementById('grab-hint').style.opacity = '1';
-        }
-        function hideGrabHint() {
-            document.getElementById('grab-hint').style.opacity = '0';
-        }
+        function showGrabHint() { document.getElementById('grab-hint').style.opacity = '1'; }
+        function hideGrabHint() { document.getElementById('grab-hint').style.opacity = '0'; }
         function switchTool(tool) {
             currentTool = tool;
             const icon = (tool === 'clippers') ? '🪒' : '✂️';
             toolIconDOM.innerText = icon;
-            if (tool === 'mini-scissors') {
-                toolIconDOM.style.fontSize = '42px';
-            } else {
-                toolIconDOM.style.fontSize = '60px';
-            }
+            toolIconDOM.style.fontSize = (tool === 'mini-scissors') ? '42px' : '60px';
             document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
             if (tool === 'scissors') document.getElementById('btn-scissors').classList.add('active');
             else if (tool === 'mini-scissors') document.getElementById('btn-mini-scissors').classList.add('active');
@@ -553,8 +562,10 @@
         document.getElementById('btn-mini-scissors').addEventListener('click', () => switchTool('mini-scissors'));
         document.getElementById('btn-clippers').addEventListener('click', () => switchTool('clippers'));
         switchTool('scissors');
+
         const raycaster = new THREE.Raycaster(); const mouse = new THREE.Vector2();
         let isGrabbingTool = false; let targetChairRotation = 0;
+
         function onPointerDown(e) {
             if(e.target.tagName === 'BUTTON' || e.target.classList.contains('tool-btn')) return;
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -577,16 +588,18 @@
                 toolIconDOM.style.transform = 'translateY(-50%) rotate(0deg)';
             }
         }
+
         function evaluateHit(seg) {
             let current = seg.userData.currentState; let target = seg.userData.targetState;
-            if (current === target) { correctCuts++; }
+            if (current === target) correctCuts++;
             else if (target === 'full') { mistakes++; flashRed(); }
             updateUI();
         }
         function flashRed() {
             document.body.style.backgroundColor = "#4a1111";
-            setTimeout(() => { document.body.style.backgroundColor = (purchased.vipBG && enabled.vipBG) ? "#3d0c11" : "#111"; }, 100);
+            setTimeout(() => { document.body.style.backgroundColor = (purchased.crimsonWalls && enabled.crimsonWalls) ? "#3d0c11" : "#111"; }, 100);
         }
+
         function updateInteraction(e) {
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
@@ -596,7 +609,6 @@
             toolIconDOM.style.transform = (currentTool === 'scissors' || currentTool === 'mini-scissors')
                 ? `rotate(${Math.sin(time) * 20}deg)`
                 : `rotate(${Math.sin(time) * 5}deg) translateY(${Math.cos(time) * 5}px)`;
-       
             mouse.x = (clientX / window.innerWidth) * 2 - 1;
             mouse.y = -(clientY / window.innerHeight) * 2 + 1;
             raycaster.setFromCamera(mouse, camera);
@@ -607,14 +619,9 @@
                     if (seg.userData.currentState === 'cut') return;
                     const segPos = new THREE.Vector3(); seg.getWorldPosition(segPos);
                     let isHit = false;
-                    if (currentTool === 'scissors') {
-                        if (segPos.distanceTo(hitPoint) < 0.28) isHit = true;
-                    } else if (currentTool === 'mini-scissors') {
-                        if (segPos.distanceTo(hitPoint) < 0.196) isHit = true;
-                    } else if (currentTool === 'clippers') {
-                        if (segPos.distanceTo(hitPoint) < 0.64) isHit = true;
-                    }
-               
+                    if (currentTool === 'scissors') { if (segPos.distanceTo(hitPoint) < 0.28) isHit = true; }
+                    else if (currentTool === 'mini-scissors') { if (segPos.distanceTo(hitPoint) < 0.196) isHit = true; }
+                    else if (currentTool === 'clippers') { if (segPos.distanceTo(hitPoint) < 0.64) isHit = true; }
                     if (isHit) {
                         seg.userData.currentState = 'cut';
                         seg.visible = false;
@@ -625,12 +632,12 @@
                 });
             }
         }
+
         function updateUI() {
             let progressRaw = (correctCuts / totalTasks) * 100;
             let progressPercent = Math.min(100, Math.floor(progressRaw || 0));
-       
             let accuracyPercent = 100;
-            if (mistakes > 0) accuracyPercent = Math.max(0, 100 - Math.floor((mistakes / totalTasks) * 150));
+            if (mistakes > 0) accuracyPercent = Math.max(0, 100 - Math.floor((mistakes / Math.max(1, totalTasks)) * 60));
             document.getElementById('progress-bar').style.width = progressPercent + '%';
             document.getElementById('progress-text').innerText = `Completion: ${progressPercent}%`;
             document.getElementById('accuracy-bar').style.width = accuracyPercent + '%';
@@ -643,6 +650,7 @@
                 levelIsActive = false; setTimeout(() => { showLevelComplete(accuracyPercent); }, 800);
             }
         }
+
         function showLevelComplete(finalAccuracy) {
             onPointerUp(); resultFrames = [];
             camera.position.set(3, 3, 5); camera.lookAt(0, 1.5, 0);
@@ -656,57 +664,63 @@
             let accuracyColor = finalAccuracy >= 80 ? "#4CAF50" : (finalAccuracy >= 50 ? "#ff9800" : "#f44336");
             document.getElementById('final-accuracy-display').innerText = `Accuracy: ${finalAccuracy}%`;
             document.getElementById('final-accuracy-display').style.color = accuracyColor;
-            let basePay = 20;
-            let tip = Math.floor(finalAccuracy * 0.3);
+            let basePay = 20; let tip = Math.floor(finalAccuracy * 0.3);
             if (finalAccuracy < 50) { basePay = 0; tip = 0; }
             let total = basePay + tip;
-       
             money += total;
             updateEconomyUI();
+            reviewCount++;
+            let change = (finalAccuracy - 75) / 250;
+            shopRating = Math.max(1.0, Math.min(5.0, shopRating + change));
+            localStorage.setItem('barberRating', shopRating);
+            localStorage.setItem('barberReviews', reviewCount);
             document.getElementById('earnings-display').innerText = `Base: $${basePay} | Tip: $${tip} | Total: $${total}`;
-            let category;
-            if (finalAccuracy <= 65) {
-                category = 'low';
-            } else if (finalAccuracy <= 80) {
-                category = 'medium';
-            } else if (finalAccuracy <= 94) {
-                category = 'high';
-            } else {
-                category = 'perfect';
-            }
+            let category = finalAccuracy <= 65 ? 'low' : (finalAccuracy <= 80 ? 'medium' : (finalAccuracy <= 94 ? 'high' : 'perfect'));
             const possibleDialogues = dialogues[category];
             const randomDialogue = possibleDialogues[Math.floor(Math.random() * possibleDialogues.length)];
             document.getElementById('customer-dialogue').innerText = `"${randomDialogue}"`;
             document.getElementById('level-complete-modal').style.display = 'flex';
+
+            // SAVE TO PREVIOUS LEVELS
+            const levelData = levels[(currentLevel - 1) % levels.length];
+            const levelRecord = {
+                levelNum: currentLevel,
+                name: levelData.name,
+                accuracy: finalAccuracy,
+                requestImages: [...requestFrames],
+                resultImages: [...resultFrames]
+            };
+            completedLevels.unshift(levelRecord);
+            if (completedLevels.length > 50) completedLevels.pop();
+            localStorage.setItem('barberCompletedLevels', JSON.stringify(completedLevels));
         }
+
         function openShop() {
             levelIsActive = false; onPointerUp();
             const container = document.getElementById('shop-items-container');
             container.innerHTML = '';
-       
             shopData.forEach(item => {
-                const isPurchased = purchased[item.id];
-                const isEnabled = enabled[item.id];
-                let btnHTML;
-                if (!isPurchased) {
-                    btnHTML = `<button class="btn btn-shop" onclick="buyItem('${item.id}', ${item.price})">$${item.price}</button>`;
+                const div = document.createElement('div');
+                div.className = `shop-item ${purchased[item.id] ? 'owned' : ''}`;
+                let statusHTML = '';
+                if (purchased[item.id]) {
+                    const isOn = enabled[item.id];
+                    statusHTML = `<button onclick="toggleUpgrade('${item.id}')" class="btn" style="background:${isOn?'#4CAF50':'#f44336'};color:white;padding:8px 15px;font-size:14px;">${isOn?'ON':'OFF'}</button>`;
                 } else {
-                    const toggleText = isEnabled ? 'Disable ❌' : 'Enable ✅';
-                    const toggleStyle = isEnabled ? 'background:#4CAF50;color:white;' : '';
-                    btnHTML = `<button class="btn" style="${toggleStyle}" onclick="toggleUpgrade('${item.id}')">${toggleText}</button>`;
+                    statusHTML = `<button onclick="buyItem('${item.id}',${item.price})" class="btn btn-shop" style="padding:8px 15px;font-size:14px;">Buy $${item.price}</button>`;
                 }
-                container.innerHTML += `
-                    <div class="shop-item ${isPurchased ? 'owned' : ''}">
-                        <div class="shop-info">
-                            <div class="shop-title">${item.name}</div>
-                            <div class="shop-desc">${item.desc}</div>
-                        </div>
-                        ${btnHTML}
+                div.innerHTML = `
+                    <div class="shop-info">
+                        <div class="shop-title">${item.name}</div>
+                        <div class="shop-desc">${item.desc}</div>
                     </div>
+                    ${statusHTML}
                 `;
+                container.appendChild(div);
             });
             document.getElementById('shop-modal').style.display = 'flex';
         }
+
         window.buyItem = function(id, price) {
             if (money >= price && !purchased[id]) {
                 money -= price;
@@ -719,6 +733,7 @@
                 alert("Not enough money!");
             }
         };
+
         window.toggleUpgrade = function(id) {
             if (!purchased[id]) return;
             enabled[id] = !enabled[id];
@@ -726,126 +741,343 @@
             applyUpgradesToScene();
             openShop();
         };
+
         function closeShop() {
             document.getElementById('shop-modal').style.display = 'none';
             levelIsActive = true;
         }
+
         window.addEventListener('pointerdown', onPointerDown);
         window.addEventListener('pointermove', onPointerMove);
         window.addEventListener('pointerup', onPointerUp);
         window.addEventListener('pointercancel', onPointerUp);
+
         document.getElementById('btn-left').addEventListener('click', () => { targetChairRotation -= Math.PI / 4; });
         document.getElementById('btn-right').addEventListener('click', () => { targetChairRotation += Math.PI / 4; });
         document.getElementById('btn-angle').addEventListener('click', toggleView);
         document.getElementById('btn-photo').addEventListener('click', () => { document.getElementById('photo-modal').style.display = 'flex'; });
         document.getElementById('btn-shop-open').addEventListener('click', openShop);
-   
         document.getElementById('btn-force-finish').addEventListener('click', () => {
             if (levelIsActive) {
                 levelIsActive = false;
                 let finalAccuracy = 100;
-                if (mistakes > 0) finalAccuracy = Math.max(0, 100 - Math.floor((mistakes / totalTasks) * 150));
+                if (mistakes > 0) finalAccuracy = Math.max(0, 100 - Math.floor((mistakes / Math.max(1, totalTasks)) * 60));
                 showLevelComplete(finalAccuracy);
             }
         });
-        function closePhoto() {
-            document.getElementById('photo-modal').style.display = 'none';
-            levelIsActive = true;
-            showGrabHint();
-        }
+
+        function closePhoto() { document.getElementById('photo-modal').style.display = 'none'; levelIsActive = true; showGrabHint(); }
         function startNextLevel() { document.getElementById('level-complete-modal').style.display = 'none'; currentLevel++; loadLevel(currentLevel); }
         function restartLevel() { document.getElementById('fail-modal').style.display = 'none'; loadLevel(currentLevel); }
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
+
+        window.addEventListener('resize', () => { 
+            camera.aspect = window.innerWidth / window.innerHeight; 
+            camera.updateProjectionMatrix(); 
+            renderer.setSize(window.innerWidth, window.innerHeight); 
         });
 
-        // ==================== MUSIC SYSTEM (3 songs + toggle + settings) ====================
+        // MUSIC
         const bgMusic = document.getElementById('bgMusic');
-        let musicStarted = false;
-        let isMusicOn = true;
-        let currentSongIndex = 0;
-        const songs = [
-            { name: "SoundHelix Song 1 (Upbeat)", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
-            { name: "SoundHelix Song 2 (Chill)", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
-            { name: "SoundHelix Song 3 (Energetic)", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" }
+        let musicStarted = false; let isMusicOn = true; let currentSongIndex = 1;
+        const songs = [{ name: "SoundHelix Song 1 (Upbeat)", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" }, { name: "SoundHelix Song 2 (Chill)", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" }, { name: "SoundHelix Song 3 (Energetic)", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" }];
+        function playCurrentSong() { if (!isMusicOn || !musicStarted) return; bgMusic.pause(); bgMusic.src = songs[currentSongIndex].src; bgMusic.load(); const playPromise = bgMusic.play(); if (playPromise !== undefined) playPromise.catch(() => {}); }
+        function startBackgroundMusic() { if (musicStarted) return; musicStarted = true; playCurrentSong(); }
+        function toggleMusic() { isMusicOn = !isMusicOn; if (isMusicOn) playCurrentSong(); else bgMusic.pause(); updateMusicToggleUI(); }
+        function updateMusicToggleUI() { const btn = document.getElementById('music-toggle-btn'); if (btn) btn.innerHTML = isMusicOn ? '🔊 Music: ON' : '🔇 Music: OFF'; }
+        function switchSong(index) { currentSongIndex = index; if (isMusicOn && musicStarted) playCurrentSong(); renderSongList(); }
+        function renderSongList() { 
+            const container = document.getElementById('song-list'); 
+            let html = ''; 
+            songs.forEach((song, i) => { 
+                const active = (i === currentSongIndex) ? 'playing' : ''; 
+                html += `<div class="song-item ${active}" onclick="switchSong(${i})">${song.name}</div>`; 
+            }); 
+            container.innerHTML = html; 
+        }
+        function openSettings() { levelIsActive = false; onPointerUp(); renderSongList(); updateMusicToggleUI(); document.getElementById('settings-modal').style.display = 'flex'; }
+        function closeSettings() { document.getElementById('settings-modal').style.display = 'none'; levelIsActive = true; }
+
+        // ==================== FIXED CONVERSATION SYSTEM (coherent replies) ====================
+        let dms = [];
+        let unreadCount = 0;
+        let currentOpenDMId = null;
+        let currentSocialTab = 0;
+        const clientMessages = [
+            {
+                text: "Hey! That taper fade you gave me last month still looks sharp. Can you do the same next Friday?",
+                replies: ["For sure! Friday at 3pm?", "Yeah, same taper fade again?"],
+                followUp: "Perfect, see you Friday! Can't wait for another clean fade 💈"
+            },
+            {
+                text: "Bro my wife loved the bowl cut 😂 Thanks man, you're the GOAT!",
+                replies: ["Haha thanks! Want another bowl cut soon?", "Glad she loved it! Book another one?"],
+                followUp: "For sure, let's book it! You're the best 💈"
+            },
+            {
+                text: "The rat tail is growing out nice — mind trimming the sides a bit more this time?",
+                replies: ["Got it, sides shorter next time?", "Sure, rat tail stays but sides cleaned up!"],
+                followUp: "Awesome, thanks man! See you soon 🔥"
+            },
+            {
+                text: "That mohawk was fire! Any tips so I can keep it fresh at home?",
+                replies: ["Use a bit of gel and comb it up daily!", "Come back in 2 weeks for maintenance?"],
+                followUp: "Thanks, you're the best! I'll try that"
+            },
+            {
+                text: "Back from vacation and I need a clean classic cut ASAP 😎",
+                replies: ["When are you free? I can squeeze you in today!", "Classic it is — let's get you looking sharp!"],
+                followUp: "See you soon, man! You're a legend"
+            },
+            {
+                text: "Your fade is insane — all my friends are asking who did it!",
+                replies: ["Tell them it's Barber Shop Tycoon! 😎", "Want the same fade again?"],
+                followUp: "Haha will do! Booking the same fade"
+            },
+            {
+                text: "The quiff you gave me lasted all day at the wedding. Legend!",
+                replies: ["Glad it held up! Another quiff soon?", "Thanks! Want to try a new style next?"],
+                followUp: "Definitely coming back! You're fire"
+            },
+            {
+                text: "Quick Q: do you cut kids? My son wants a mini mohawk like his dad 😂",
+                replies: ["Yes! Bring him in anytime.", "Mini mohawk for the little guy — love it!"],
+                followUp: "Great, we'll come by soon! Thanks bro"
+            }
         ];
 
-        function playCurrentSong() {
-            if (!isMusicOn || !musicStarted) return;
-            bgMusic.pause();
-            bgMusic.src = songs[currentSongIndex].src;
-            bgMusic.load();
-            const playPromise = bgMusic.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(() => {});
+        function addRandomDM() {
+            const template = clientMessages[Math.floor(Math.random() * clientMessages.length)];
+            const newDM = {
+                id: Date.now(),
+                text: template.text,
+                time: "just now",
+                read: false,
+                replied: false,
+                yourReply: null,
+                customerReply: null,
+                replyOptions: template.replies,
+                followUp: template.followUp
+            };
+            dms.unshift(newDM);
+            unreadCount++;
+            updateSocialBadge();
+            if (document.getElementById('social-modal').style.display === 'flex' && currentSocialTab === 0) renderDMList();
+        }
+
+        function updateSocialBadge() {
+            const badge = document.getElementById('social-badge');
+            if (unreadCount > 0) {
+                badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+                badge.style.display = 'flex';
+            } else badge.style.display = 'none';
+        }
+
+        function renderDMList() {
+            const container = document.getElementById('dm-list');
+            container.innerHTML = '';
+            if (dms.length === 0) {
+                container.innerHTML = '<p style="color:#666; padding:30px; text-align:center;">No messages yet.<br>New ones arrive every 30-90 seconds!</p>';
+                return;
             }
-        }
-
-        function startBackgroundMusic() {
-            if (musicStarted) return;
-            musicStarted = true;
-            playCurrentSong();
-        }
-
-        function toggleMusic() {
-            isMusicOn = !isMusicOn;
-            if (isMusicOn) {
-                playCurrentSong();
-            } else {
-                bgMusic.pause();
-            }
-            updateMusicToggleUI();
-        }
-
-        function updateMusicToggleUI() {
-            const btn = document.getElementById('music-toggle-btn');
-            if (btn) btn.innerHTML = isMusicOn ? '🔊 Music: ON' : '🔇 Music: OFF';
-        }
-
-        function switchSong(index) {
-            currentSongIndex = index;
-            if (isMusicOn && musicStarted) {
-                playCurrentSong();
-            }
-            renderSongList();
-        }
-
-        function renderSongList() {
-            const container = document.getElementById('song-list');
-            let html = '';
-            songs.forEach((song, i) => {
-                const active = (i === currentSongIndex) ? 'playing' : '';
-                html += `<div class="song-item ${active}" onclick="switchSong(${i})">${song.name}</div>`;
+            dms.forEach(dm => {
+                const div = document.createElement('div');
+                div.className = `dm-preview ${!dm.read ? 'unread' : ''}`;
+                div.innerHTML = `
+                    <div style="text-align:left; flex:1;">
+                        <div style="font-weight:bold; color:#1e88e5;">Client</div>
+                        <div style="font-size:14px; line-height:1.35;">${dm.text.substring(0,68)}${dm.text.length>68?'...':''}</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div class="dm-time">${dm.time}</div>
+                        ${!dm.read ? '<div class="red-dot"></div>' : ''}
+                    </div>
+                `;
+                div.onclick = () => openDM(dm.id);
+                container.appendChild(div);
             });
-            container.innerHTML = html;
         }
 
-        function openSettings() {
+        function openDM(id) {
+            currentOpenDMId = id;
+            const dm = dms.find(d => d.id === id);
+            if (!dm) return;
+           
+            document.getElementById('dm-list').style.display = 'none';
+            const chat = document.getElementById('dm-chat');
+            chat.style.display = 'block';
+           
+            const messagesDiv = document.getElementById('chat-messages');
+            messagesDiv.innerHTML = `<div class="bubble customer-bubble">${dm.text}</div>`;
+           
+            if (dm.replied) {
+                messagesDiv.innerHTML += `
+                    <div class="bubble player-bubble">${dm.yourReply}</div>
+                    <div class="bubble customer-bubble">${dm.customerReply}</div>
+                `;
+                document.getElementById('reply-options').innerHTML = '<p style="color:#4CAF50; font-weight:bold; padding:10px;">✓ Replied — they loved it!</p>';
+            } else {
+                const optionsDiv = document.getElementById('reply-options');
+                optionsDiv.innerHTML = '';
+                dm.replyOptions.forEach((choice, i) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'btn';
+                    btn.style.background = '#4CAF50'; btn.style.color = 'white';
+                    btn.style.padding = '12px 18px';
+                    btn.textContent = choice;
+                    btn.onclick = () => sendReply(i);
+                    optionsDiv.appendChild(btn);
+                });
+            }
+           
+            dm.read = true;
+            unreadCount = Math.max(0, unreadCount - 1);
+            updateSocialBadge();
+            renderDMList();
+        }
+
+        function sendReply(choiceIndex) {
+            const dm = dms.find(d => d.id === currentOpenDMId);
+            if (!dm || dm.replied) return;
+           
+            const yourText = dm.replyOptions[choiceIndex];
+            const custReply = dm.followUp;
+           
+            dm.yourReply = yourText;
+            dm.customerReply = custReply;
+            dm.replied = true;
+           
+            const messagesDiv = document.getElementById('chat-messages');
+            messagesDiv.innerHTML += `
+                <div class="bubble player-bubble">${yourText}</div>
+                <div class="bubble customer-bubble">${custReply}</div>
+            `;
+            document.getElementById('reply-options').innerHTML = '<p style="color:#4CAF50; font-weight:bold; padding:10px;">✓ Replied — they loved it!</p>';
+        }
+
+        function backToDMList() {
+            document.getElementById('dm-chat').style.display = 'none';
+            document.getElementById('dm-list').style.display = 'block';
+            renderDMList();
+        }
+
+        // RATINGS
+        function updateRatingDisplay() {
+            const r = shopRating.toFixed(1);
+            let starsHTML = '';
+            for (let i = 1; i <= 5; i++) {
+                if (i <= Math.floor(shopRating)) starsHTML += '<span style="color:#ffc107;">★</span>';
+                else starsHTML += '<span style="color:#555;">☆</span>';
+            }
+            document.getElementById('star-display').innerHTML = starsHTML;
+            document.getElementById('rating-number').innerText = r;
+            let desc = shopRating >= 4.7 ? "Legendary barber shop! 🌟 Everyone wants you!" :
+                       shopRating >= 4.3 ? "Clients rave about your cuts 💈 You're killing it!" :
+                       shopRating >= 3.8 ? "Solid shop — customers keep coming back!" :
+                       shopRating >= 3.2 ? "Getting better every day! Nice work 🔥" :
+                       "Room to grow — let's crush the next cuts! 💪";
+            document.getElementById('rating-description').innerText = desc;
+            document.getElementById('review-count').innerText = reviewCount;
+        }
+
+        function renderPreviousList() {
+            const container = document.getElementById('previous-list');
+            container.innerHTML = '';
+            if (completedLevels.length === 0) {
+                container.innerHTML = '<p style="color:#666; padding:40px; text-align:center;">No completed levels yet!<br>Finish some jobs to see them here 💈</p>';
+                return;
+            }
+            completedLevels.forEach((rec, idx) => {
+                const div = document.createElement('div');
+                div.style.cssText = 'background:#333; margin:8px 0; padding:15px; border-radius:12px; display:flex; align-items:center; cursor:pointer; transition:all .2s;';
+                const accColor = rec.accuracy >= 80 ? '#4CAF50' : (rec.accuracy >= 50 ? '#ff9800' : '#f44336');
+                div.innerHTML = `
+                    <div style="flex:1; text-align:left;">
+                        <div style="font-weight:bold; color:#ffc107;">Level ${rec.levelNum} - ${rec.name}</div>
+                        <div style="font-size:15px; color:${accColor};">Accuracy: ${rec.accuracy}%</div>
+                    </div>
+                    <div style="width:68px; height:68px; border:3px solid #555; border-radius:8px; overflow:hidden;">
+                        <img src="${rec.requestImages[0]}" style="width:100%; height:100%; object-fit:cover;">
+                    </div>
+                `;
+                div.onclick = () => openPreviousDetail(idx);
+                container.appendChild(div);
+            });
+        }
+
+        function openPreviousDetail(idx) {
+            const rec = completedLevels[idx];
+            if (!rec) return;
+            document.getElementById('previous-list').style.display = 'none';
+            const detailDiv = document.getElementById('previous-detail');
+            detailDiv.style.display = 'block';
+            document.getElementById('detail-level-name').innerText = `Level ${rec.levelNum} - ${rec.name}`;
+            const accColor = rec.accuracy >= 80 ? "#4CAF50" : (rec.accuracy >= 50 ? "#ff9800" : "#f44336");
+            const accEl = document.getElementById('detail-accuracy-display');
+            accEl.innerText = `Accuracy: ${rec.accuracy}%`;
+            accEl.style.color = accColor;
+            document.getElementById('detail-request-img').src = rec.requestImages[0];
+            document.getElementById('detail-result-img').src = rec.resultImages[0];
+            if (window.detailSpinInterval) clearInterval(window.detailSpinInterval);
+            let detailSpinIdx = 0;
+            window.detailSpinInterval = setInterval(() => {
+                if (rec.requestImages.length > 0) document.getElementById('detail-request-img').src = rec.requestImages[detailSpinIdx % rec.requestImages.length];
+                if (rec.resultImages.length > 0) document.getElementById('detail-result-img').src = rec.resultImages[detailSpinIdx % rec.resultImages.length];
+                detailSpinIdx++;
+            }, 120);
+        }
+
+        function backToPreviousList() {
+            if (window.detailSpinInterval) {
+                clearInterval(window.detailSpinInterval);
+                window.detailSpinInterval = null;
+            }
+            document.getElementById('previous-detail').style.display = 'none';
+            document.getElementById('previous-list').style.display = 'block';
+            renderPreviousList();
+        }
+
+        function switchSocialTab(tab) {
+            currentSocialTab = tab;
+            document.getElementById('social-messages-content').style.display = tab === 0 ? 'block' : 'none';
+            document.getElementById('social-ratings-content').style.display = tab === 1 ? 'block' : 'none';
+            document.getElementById('social-previous-content').style.display = tab === 2 ? 'block' : 'none';
+            document.getElementById('tab-btn-messages').style.background = tab === 0 ? '#1e88e5' : '#333';
+            document.getElementById('tab-btn-ratings').style.background = tab === 1 ? '#1e88e5' : '#333';
+            document.getElementById('tab-btn-previous').style.background = tab === 2 ? '#1e88e5' : '#333';
+            if (tab === 1) updateRatingDisplay();
+            if (tab === 2) renderPreviousList();
+        }
+
+        function openSocial() {
             levelIsActive = false; onPointerUp();
-            renderSongList();
-            updateMusicToggleUI();
-            document.getElementById('settings-modal').style.display = 'flex';
+            document.getElementById('social-modal').style.display = 'flex';
+            switchSocialTab(0);
+            renderDMList();
         }
 
-        function closeSettings() {
-            document.getElementById('settings-modal').style.display = 'none';
+        function closeSocial() {
+            document.getElementById('social-modal').style.display = 'none';
             levelIsActive = true;
+            if (window.detailSpinInterval) {
+                clearInterval(window.detailSpinInterval);
+                window.detailSpinInterval = null;
+            }
         }
 
-        // ==================== EVENT LISTENERS ====================
+        function scheduleNextDM() {
+            const delay = 30000 + Math.random() * 60000;
+            setTimeout(() => { addRandomDM(); scheduleNextDM(); }, delay);
+        }
+
+        // EVENT LISTENERS
         document.getElementById('btn-settings').addEventListener('click', openSettings);
+        document.getElementById('btn-social').addEventListener('click', openSocial);
         document.addEventListener('click', startBackgroundMusic, { once: true });
 
         function animate() {
             requestAnimationFrame(animate);
             characterGroup.rotation.y += (targetChairRotation - characterGroup.rotation.y) * 0.1;
-       
-            if (neonMesh) {
-                neonMesh.rotation.z += 0.01;
-                neonMesh.rotation.x += 0.005;
-            }
+            if (neonMesh) { neonMesh.rotation.z += 0.01; neonMesh.rotation.x += 0.005; }
             for (let i = fallingHair.length - 1; i >= 0; i--) {
                 const fh = fallingHair[i];
                 fh.vy -= 0.006;
@@ -854,16 +1086,15 @@
                 fh.mesh.position.z += fh.vz;
                 fh.mesh.rotation.x += fh.rx;
                 fh.mesh.rotation.z += fh.rx;
-                if (fh.mesh.position.y < -3.5) {
-                    scene.remove(fh.mesh);
-                    fallingHair.splice(i, 1);
-                }
+                if (fh.mesh.position.y < -3.5) { scene.remove(fh.mesh); fallingHair.splice(i, 1); }
             }
             renderer.render(scene, camera);
         }
+
         loadLevel(currentLevel);
         updateCameraView();
         animate();
+        setTimeout(() => { scheduleNextDM(); }, 15000);
     </script>
 </body>
 </html>
